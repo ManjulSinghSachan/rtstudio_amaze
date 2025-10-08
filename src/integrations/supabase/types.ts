@@ -70,6 +70,30 @@ export type Database = {
         }
         Relationships: []
       }
+      prompts: {
+        Row: {
+          category: string
+          created_at: string
+          example_prompt: string
+          id: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          example_prompt: string
+          id?: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          example_prompt?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       stories: {
         Row: {
           attribution: string
