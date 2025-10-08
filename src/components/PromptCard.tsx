@@ -6,7 +6,7 @@ import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Copy, Wand2, Eye } from "lucide-react";
+import { Copy, Wand2, ExternalLink } from "lucide-react";
 
 interface PromptCardProps {
   id: string;
@@ -14,9 +14,10 @@ interface PromptCardProps {
   category: string;
   examplePrompt: string;
   description?: string;
+  exampleUrl?: string;
 }
 
-export const PromptCard = ({ title, examplePrompt, description }: PromptCardProps) => {
+export const PromptCard = ({ title, examplePrompt, description, exampleUrl }: PromptCardProps) => {
   const [communityContext, setCommunityContext] = useState("");
   const [customizationIdeas, setCustomizationIdeas] = useState("");
   const [remixedPrompt, setRemixedPrompt] = useState("");
@@ -73,7 +74,19 @@ export const PromptCard = ({ title, examplePrompt, description }: PromptCardProp
           <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{description}</p>
         )}
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {exampleUrl && (
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="hover:bg-orange-50 hover:text-orange-700 dark:hover:bg-orange-950 dark:hover:text-orange-400"
+            >
+              <a href={exampleUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </Button>
+          )}
           <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="flex-1 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 dark:hover:bg-orange-950 dark:hover:text-orange-400">

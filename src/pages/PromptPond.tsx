@@ -168,6 +168,11 @@ const PromptPond = () => {
                 category={prompt.category}
                 examplePrompt={prompt.example_prompt}
                 description={prompt.description}
+                exampleUrl={
+                  prompt.title === "Hyperlocal Neighbor Hubs" 
+                    ? "https://cozycorner.place/" 
+                    : "#"
+                }
               />
             ))
           )}
