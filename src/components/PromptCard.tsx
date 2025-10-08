@@ -81,18 +81,18 @@ export const PromptCard = ({ title, category, examplePrompt }: PromptCardProps) 
                 View Example
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-4xl max-h-[80vh]">
               <DialogHeader>
                 <DialogTitle className="font-fraunces">{title}</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="space-y-4 overflow-y-auto max-h-[calc(80vh-120px)] pr-4">
                 <div className="bg-gradient-to-br from-orange-50/50 to-pink-50/30 dark:from-orange-950/20 dark:to-pink-950/10 p-4 rounded-lg border border-orange-100 dark:border-orange-900">
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{examplePrompt}</p>
+                  <pre className="text-sm whitespace-pre-wrap leading-relaxed font-sans">{examplePrompt}</pre>
                 </div>
                 <Button
                   onClick={() => copyToClipboard(examplePrompt)}
                   variant="outline"
-                  className="w-full border-orange-200 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-800 dark:hover:bg-orange-950"
+                  className="w-full border-orange-200 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-800 dark:hover:bg-orange-950 sticky bottom-0 bg-background"
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   Copy to Clipboard
@@ -108,10 +108,11 @@ export const PromptCard = ({ title, category, examplePrompt }: PromptCardProps) 
                 Remix
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-4xl max-h-[80vh]">
               <DialogHeader>
                 <DialogTitle className="font-fraunces">Remix: {title}</DialogTitle>
               </DialogHeader>
+              <div className="overflow-y-auto max-h-[calc(80vh-120px)] pr-4">
               <form onSubmit={handleRemix} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="context">Your Context & Ideas</Label>
@@ -146,6 +147,7 @@ export const PromptCard = ({ title, category, examplePrompt }: PromptCardProps) 
                   </div>
                 )}
               </form>
+              </div>
             </DialogContent>
           </Dialog>
         </div>
