@@ -75,7 +75,7 @@ export const PromptCard = ({ title, examplePrompt, description }: PromptCardProp
         <div className="flex gap-2">
           <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="flex-1">
+              <Button variant="outline" size="sm" className="flex-1 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 dark:hover:bg-orange-950 dark:hover:text-orange-400">
                 View
               </Button>
             </DialogTrigger>
@@ -101,7 +101,7 @@ export const PromptCard = ({ title, examplePrompt, description }: PromptCardProp
 
           <Dialog open={isRemixDialogOpen} onOpenChange={setIsRemixDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="flex-1">
+              <Button variant="outline" size="sm" className="flex-1 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 dark:hover:bg-orange-950 dark:hover:text-orange-400">
                 <Wand2 className="w-4 h-4 mr-2" />
                 Remix
               </Button>
