@@ -1,43 +1,218 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Checkbox } from "./ui/checkbox";
+import { Card, CardContent } from "./ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { ExternalLink } from "lucide-react";
 
 interface ToolCardProps {
+  id: string;
   name: string;
   description: string;
   url: string;
 }
 
-export const ToolCard = ({ name, description, url }: ToolCardProps) => {
-  const [wantsPlayGroup, setWantsPlayGroup] = useState(false);
+export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [notes, setNotes] = useState<any[]>([]);
+  const [newNote, setNewNote] = useState("");
+  const [noteName, setNoteName] = useState("");
+  const [isAddingNote, setIsAddingNote] = useState(false);
+  const [isPlayGroupOpen, setIsPlayGroupOpen] = useState(false);
+  const [playGroupName, setPlayGroupName] = useState("");
+  const [playGroupEmail, setPlayGroupEmail] = useState("");
+  const [isSubmittingPlayGroup, setIsSubmittingPlayGroup] = useState(false);
+  const { toast } = useToast();
+
+  const loadNotes = async () => {
+    const { data } = await supabase
+      .from("tool_notes")
+      .select("*")
+      .eq("tool_id", id)
+      .order("created_at", { ascending: false });
+    
+    if (data) setNotes(data);
+  };
+
+  const handleNoteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAddingNote(true);
+
+    try {
+      const { error } = await supabase
+        .from("tool_notes")
+        .insert({
+          tool_id: id,
+          note_text: newNote,
+          author_name: noteName,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Note added!",
+        description: "Your note is now visible to others.",
+      });
+
+      setNewNote("");
+      setNoteName("");
+      await loadNotes();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add note. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAddingNote(false);
+    }
+  };
+
+  const handlePlayGroupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingPlayGroup(true);
+
+    try {
+      const { error } = await supabase
+        .from("play_group_signups")
+        .insert({
+          tool_name: name,
+          user_id: crypto.randomUUID(), // Temporary until auth is implemented
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Thanks!",
+        description: "We'll be in touch about the play group!",
+      });
+
+      setPlayGroupName("");
+      setPlayGroupEmail("");
+      setIsPlayGroupOpen(false);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign up. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingPlayGroup(false);
+    }
+  };
+
+  const handleExpand = async () => {
+    if (!isExpanded) {
+      await loadNotes();
+    }
+    setIsExpanded(!isExpanded);
+  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg font-bold flex items-center justify-between">
-          {name}
+    <Card className="border-l-4 border-l-blue-400 hover:shadow-lg transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-xl font-bold font-fraunces text-foreground">{name}</h3>
           <a href={url} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="h-4 w-4 text-muted-foreground hover:text-accent" />
+            <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-blue-600 transition-colors" />
           </a>
-        </CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id={`playgroup-${name}`}
-            checked={wantsPlayGroup}
-            onCheckedChange={(checked) => setWantsPlayGroup(checked as boolean)}
-          />
-          <label
-            htmlFor={`playgroup-${name}`}
-            className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            I'd like to join a play group for this tool
-          </label>
         </div>
+        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{description}</p>
+        
+        <div className="flex gap-2 mb-4">
+          <Button variant="outline" size="sm" onClick={handleExpand} className="hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 dark:hover:bg-blue-950 dark:hover:text-blue-400">
+            {isExpanded ? "Hide Notes" : "Notes"}
+          </Button>
+          
+          <Dialog open={isPlayGroupOpen} onOpenChange={setIsPlayGroupOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 dark:hover:bg-blue-950 dark:hover:text-blue-400">
+                Play Group
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Express Interest in Play Group</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handlePlayGroupSubmit} className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Join a play group to learn and build with {name} together!
+                </p>
+                <div className="space-y-2">
+                  <Label htmlFor="playGroupName">Name</Label>
+                  <Input
+                    id="playGroupName"
+                    value={playGroupName}
+                    onChange={(e) => setPlayGroupName(e.target.value)}
+                    placeholder="Your name"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="playGroupEmail">Email</Label>
+                  <Input
+                    id="playGroupEmail"
+                    type="email"
+                    value={playGroupEmail}
+                    onChange={(e) => setPlayGroupEmail(e.target.value)}
+                    placeholder="your.email@example.com"
+                    required
+                  />
+                </div>
+                <Button type="submit" disabled={isSubmittingPlayGroup} className="w-full">
+                  {isSubmittingPlayGroup ? "Submitting..." : "Express Interest"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {isExpanded && (
+          <div className="border-t pt-4 space-y-4">
+            <div className="space-y-2">
+              {notes.length > 0 ? (
+                notes.map((note) => (
+                  <div key={note.id} className="bg-muted/50 p-3 rounded text-sm">
+                    <p className="mb-1">{note.note_text}</p>
+                    <p className="text-xs text-muted-foreground">— {note.author_name}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No notes yet. Be the first to add one!</p>
+              )}
+            </div>
+
+            <form onSubmit={handleNoteSubmit} className="space-y-3">
+              <div className="space-y-2">
+                <Label htmlFor="note">Your note</Label>
+                <Textarea
+                  id="note"
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  rows={3}
+                  placeholder="Share your tips, tricks, or experiences..."
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="noteName">Your name (optional)</Label>
+                <Input
+                  id="noteName"
+                  value={noteName}
+                  onChange={(e) => setNoteName(e.target.value)}
+                  placeholder="Your first name or 'Anonymous'"
+                />
+              </div>
+              <Button type="submit" disabled={isAddingNote} size="sm">
+                {isAddingNote ? "Adding..." : "Add Note"}
+              </Button>
+            </form>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

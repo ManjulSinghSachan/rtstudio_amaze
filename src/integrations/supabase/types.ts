@@ -183,6 +183,65 @@ export type Database = {
         }
         Relationships: []
       }
+      tool_notes: {
+        Row: {
+          author_name: string
+          created_at: string
+          id: string
+          note_text: string
+          tool_id: string
+          user_id: string | null
+        }
+        Insert: {
+          author_name: string
+          created_at?: string
+          id?: string
+          note_text: string
+          tool_id: string
+          user_id?: string | null
+        }
+        Update: {
+          author_name?: string
+          created_at?: string
+          id?: string
+          note_text?: string
+          tool_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_notes_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tools: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          name: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          name: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
