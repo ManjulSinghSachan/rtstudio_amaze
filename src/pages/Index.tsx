@@ -126,36 +126,28 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="min-h-screen flex">
       <Sidebar />
       
-      <main className="flex-1 ml-80">
-        <header className="sticky top-0 bg-background border-b border-border px-12 py-6 flex items-center justify-end z-10">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg px-6">
+      <main className="flex-1 ml-64">
+        <header className="sticky top-0 bg-background border-b border-border px-8 py-4 flex items-center justify-between z-10">
+          <h2 className="text-xl font-black">Studio</h2>
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
             Join Us
           </Button>
         </header>
 
-        <div className="px-12 py-16 max-w-4xl space-y-12">
+        <div className="px-8 py-12 max-w-5xl mx-auto space-y-24">
           {/* Home Section */}
-          <section className="space-y-8">
-            <h1 className="text-5xl font-fraunces font-medium leading-tight">
-              We can build what we need
+          <section className="space-y-6">
+            <h1 className="text-4xl font-black leading-tight">
+              Welcome to the Relational Tech Studio
             </h1>
-            <div className="space-y-6 text-base">
-              <p>
-                Many of us wish our neighborhoods were more connected. We want to live in 
-                neighborhoods where we learn from the creativity, care, and skills of our neighbors 
-                — and share our gifts too.
-              </p>
-              <p>
-                We've been told a perfect app or platform would help us, but that hasn't panned 
-                out. The hard truth is that no one is coming to save us.
-              </p>
-              <p className="font-medium">
-                The good news: we can build what we need!
-              </p>
-            </div>
+            <p className="text-lg leading-relaxed max-w-3xl">
+              This is our shared workbench and gallery—a place to get inspired, remix relational tech, 
+              and learn the craft together. Start with stories, dip into the pond of prompts, then pick 
+              up the tools you'll need to bring your idea to life.
+            </p>
           </section>
 
           {/* Story Board */}
