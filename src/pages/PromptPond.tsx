@@ -1,70 +1,152 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { TopNav } from "@/components/TopNav";
 import { PromptCard } from "@/components/PromptCard";
-
-const PROMPTS = [
-  {
-    title: "Neighborhood Signup Flow",
-    description: "A simple way for neighbors to join your community tool",
-    basePrompt: "Create a neighborhood signup flow that collects names, addresses, and interests while feeling warm and welcoming.",
-  },
-  {
-    title: "Story-Sharing Wall",
-    description: "Let neighbors share what's happening in the community",
-    basePrompt: "Build a story-sharing wall where neighbors can post updates, thanks, and requests with a simple card-based interface.",
-  },
-  {
-    title: "Tool-Sharing System",
-    description: "Help neighbors lend and borrow tools easily",
-    basePrompt: "Create a tool library system where neighbors can list items to share, request to borrow, and coordinate pickups.",
-  },
-  {
-    title: "Curiosity Exchange",
-    description: "Connect neighbors who want to learn and teach",
-    basePrompt: "Build a skills exchange where people can offer to teach (cooking, gardening) and list what they want to learn.",
-  },
-  {
-    title: "Care Calendar",
-    description: "Coordinate meal trains and mutual aid",
-    basePrompt: "Create a calendar tool for organizing meal deliveries, rides, or other support for neighbors in need.",
-  },
-  {
-    title: "Quiet Board",
-    description: "Share concerns without speaking up publicly",
-    basePrompt: "Build an anonymous suggestion board where neighbors can post concerns or ideas without social pressure.",
-  },
-];
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const PromptPond = () => {
-  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [prompts, setPrompts] = useState<any[]>([]);
+  const [newTitle, setNewTitle] = useState("");
+  const [newCategory, setNewCategory] = useState("");
+  const [newPrompt, setNewPrompt] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    const access = localStorage.getItem("studio_access");
-    if (access !== "granted") {
-      navigate("/auth");
+    const loadPrompts = async () => {
+      const { data } = await supabase
+        .from("prompts")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (data) setPrompts(data);
+    };
+
+    loadPrompts();
+  }, []);
+
+  const handlePromptSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from("prompts")
+        .insert({
+          title: newTitle,
+          category: newCategory,
+          example_prompt: newPrompt,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Prompt added!",
+        description: "Your prompt has been shared with the community.",
+      });
+
+      setNewTitle("");
+      setNewCategory("");
+      setNewPrompt("");
+      setIsDialogOpen(false);
+
+      const { data } = await supabase
+        .from("prompts")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (data) setPrompts(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add prompt. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-  }, [navigate]);
+  };
 
   return (
     <div className="min-h-screen">
       <TopNav />
       
       <main className="max-w-7xl mx-auto px-8 py-12">
-        <div className="mb-8">
-          <h2 className="text-4xl font-black font-fraunces mb-2">Prompt Pond</h2>
-          <p className="text-muted-foreground mb-4">
-            Start building. Remix a prompt and make it your own.
-          </p>
-          <p className="text-sm italic text-muted-foreground">
-            These are ponds to dip your ideas into—remix freely and make them your own.
-          </p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-4xl font-black font-fraunces mb-2">Prompt Pond</h2>
+            <p className="text-muted-foreground">
+              A collection of prompts to help you build with AI. View examples or remix them for your needs.
+            </p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">Add a prompt</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Share a prompt</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handlePromptSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    placeholder="E.g., Community Survey Generator"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Input
+                    id="category"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder="E.g., Research, Outreach, Analysis"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="prompt">Example Prompt</Label>
+                  <Textarea
+                    id="prompt"
+                    value={newPrompt}
+                    onChange={(e) => setNewPrompt(e.target.value)}
+                    rows={8}
+                    placeholder="Write your example prompt here..."
+                    required
+                  />
+                </div>
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                  {isSubmitting ? "Sharing..." : "Share Prompt"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {PROMPTS.map((prompt) => (
-            <PromptCard key={prompt.title} {...prompt} />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {prompts.length === 0 ? (
+            <p className="text-muted-foreground col-span-2">No prompts yet. Be the first to share!</p>
+          ) : (
+            prompts.map((prompt) => (
+              <PromptCard
+                key={prompt.id}
+                id={prompt.id}
+                title={prompt.title}
+                category={prompt.category}
+                examplePrompt={prompt.example_prompt}
+              />
+            ))
+          )}
         </div>
       </main>
     </div>

@@ -11,24 +11,14 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, userContext } = await req.json();
+    const { examplePrompt, userContext } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = `You are a helpful assistant for the Relational Tech Studio. Your role is to help community members customize and remix prompts for building relational tech tools.
-
-Relational tech is technology crafted by, with, and for neighbors - made to help us care for and trust each other.
-
-When a user wants to remix a prompt:
-1. Ask them about their specific neighborhood context, goals, and tone preferences
-2. Help them think through what features might work best for their community
-3. Suggest combinations or variations from other relational tech tools
-4. Output a clear, copy-pasteable prompt that they can use in Lovable or other AI builders
-
-Be conversational, warm, and curious. Help them think big but start small. The goal is to make tool-building accessible to anyone.`;
+    console.log("Remixing prompt with context:", userContext);
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -39,8 +29,14 @@ Be conversational, warm, and curious. Help them think big but start small. The g
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Original prompt: ${prompt}\n\nUser context: ${userContext}` }
+          { 
+            role: 'system', 
+            content: 'You are a helpful assistant that remixes prompts. Take the example prompt and the user\'s context/ideas, then create a customized version that incorporates their specific needs while maintaining the structure and quality of the original. Return only the remixed prompt, nothing else.' 
+          },
+          { 
+            role: 'user', 
+            content: `Example prompt:\n${examplePrompt}\n\nUser's context and ideas:\n${userContext}\n\nPlease create a customized version of this prompt that incorporates the user's context.` 
+          }
         ],
       }),
     });
@@ -61,6 +57,8 @@ Be conversational, warm, and curious. Help them think big but start small. The g
       throw new Error('AI gateway error');
     }
 
+    console.log("Successfully remixed prompt");
+    
     const data = await response.json();
     const remixedPrompt = data.choices[0].message.content;
 
