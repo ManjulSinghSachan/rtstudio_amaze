@@ -3,10 +3,8 @@ import blockPartyImage from "@/assets/os-blockparty.png";
 import neighborsImage from "@/assets/os-neighbors.png";
 import gatheringImage from "@/assets/os-gathering.png";
 import dreamsImage from "@/assets/os-dreams.png";
-
 export const FeaturedStory = () => {
-  return (
-    <article className="mb-8 sm:mb-12">
+  return <article className="mb-8 sm:mb-12">
       <div className="border-l-4 border-l-accent bg-card rounded-lg overflow-hidden shadow-lg">
         <div className="p-6 sm:p-8 lg:p-10">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-fraunces mb-4 sm:mb-6">
@@ -19,11 +17,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img 
-                src={blockPartyImage} 
-                alt="Cozy Corner block party with neighbors gathered on the street" 
-                className="w-full rounded-lg"
-              />
+              
             </div>
 
             <p>
@@ -35,11 +29,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img 
-                src={gatheringImage} 
-                alt="Neighbors gathering and connecting at the block party" 
-                className="w-full rounded-lg"
-              />
+              <img src={gatheringImage} alt="Neighbors gathering and connecting at the block party" className="w-full rounded-lg" />
             </div>
 
             <p>
@@ -51,11 +41,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img 
-                src={neighborsImage} 
-                alt="Neighbors connecting at a coffee and donuts gathering" 
-                className="w-full rounded-lg"
-              />
+              <img src={neighborsImage} alt="Neighbors connecting at a coffee and donuts gathering" className="w-full rounded-lg" />
             </div>
 
             <p>Lately, we've been building some new ones together:</p>
@@ -73,11 +59,7 @@ export const FeaturedStory = () => {
             </ul>
 
             <div className="my-6 sm:my-8">
-              <img 
-                src={dreamsImage} 
-                alt="Visualization of community dreams and connections" 
-                className="w-full rounded-lg"
-              />
+              
             </div>
 
             <p>
@@ -120,6 +102,5 @@ export const FeaturedStory = () => {
           </div>
         </div>
       </div>
-    </article>
-  );
+    </article>;
 };
