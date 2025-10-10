@@ -59,7 +59,7 @@ export const FeaturedStory = () => {
             </ul>
 
             <div className="my-6 sm:my-8">
-              <img src={dreamsImage} alt="Community dreams and aspirations" className="w-full rounded-lg" />
+              
             </div>
 
             <p>
