@@ -17,7 +17,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              
+              <img src={neighborsImage} alt="Neighbors connecting at a coffee and donuts gathering" className="w-full rounded-lg" />
             </div>
 
             <p>
@@ -29,7 +29,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img src={gatheringImage} alt="Neighbors gathering and connecting at the block party" className="w-full rounded-lg" />
+              <img src={blockPartyImage} alt="Block party celebration with neighbors in the street" className="w-full rounded-lg" />
             </div>
 
             <p>
@@ -41,7 +41,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img src={neighborsImage} alt="Neighbors connecting at a coffee and donuts gathering" className="w-full rounded-lg" />
+              <img src={gatheringImage} alt="Neighbors gathering and connecting" className="w-full rounded-lg" />
             </div>
 
             <p>Lately, we've been building some new ones together:</p>
