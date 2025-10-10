@@ -29,7 +29,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img src={blockPartyImage} alt="Block party with neighbors celebrating together" className="w-full rounded-lg" />
+              
             </div>
 
             <p>
