@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopNav } from "@/components/TopNav";
 import { StoryCard } from "@/components/StoryCard";
+import { FeaturedStory } from "@/components/FeaturedStory";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -92,7 +93,7 @@ const StoryBoard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
           <div className="flex-1">
-            <h2 className="text-3xl sm:text-4xl font-black font-fraunces mb-2 sm:mb-2">Story Board</h2>
+            <h2 className="text-3xl sm:text-4xl font-black font-fraunces mb-2 sm:mb-2">Stories</h2>
             <p className="text-muted-foreground text-sm sm:text-base">
               See what's possible. Neighborhood sparks shared by members of the studio.
             </p>
@@ -162,6 +163,12 @@ const StoryBoard = () => {
               </form>
             </DialogContent>
           </Dialog>
+        </div>
+
+        <FeaturedStory />
+
+        <div className="mb-6">
+          <h3 className="text-2xl sm:text-3xl font-black font-fraunces mb-4">Community Stories</h3>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-4">

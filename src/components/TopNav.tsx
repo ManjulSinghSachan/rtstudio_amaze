@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { name: "Story Board", path: "/" },
+  { name: "Stories", path: "/" },
   { name: "Prompt Pond", path: "/prompt-pond" },
   { name: "Tools for Crafting", path: "/tools" },
 ];
