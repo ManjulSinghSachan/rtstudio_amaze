@@ -116,12 +116,9 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
         </div>
         
         {messages.length === 0 ? (
-          <div className="text-center py-8 space-y-3">
-            <p className="text-muted-foreground">
-              Welcome! I'm here to help you remix prompts for your neighborhood's relational tech tools.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Click "Remix" on any prompt below to get started, or ask me anything about building tools for your community.
+          <div className="text-center py-6 space-y-2">
+            <p className="text-muted-foreground text-sm">
+              I'm here to help you remix prompts for your neighborhood's relational tech tools.
             </p>
           </div>
         ) : (
