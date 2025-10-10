@@ -28,7 +28,7 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
   };
 
   return (
-    <Card className="border-l-4 border-l-orange-400 hover:shadow-lg transition-all">
+    <Card className="border-l-4 border-l-primary hover:shadow-md transition-all">
       <CardContent className="p-4 sm:p-6">
         <h3 className="text-lg sm:text-xl font-bold font-fraunces mb-4 text-foreground">{title}</h3>
         {description && (
@@ -41,7 +41,7 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
               variant="outline"
               size="sm"
               asChild
-              className="w-full sm:w-auto flex-1 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 dark:hover:bg-orange-950 dark:hover:text-orange-400"
+              className="w-full sm:w-auto flex-1"
             >
               <a href={exampleUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-4 h-4 mr-2" />
@@ -51,7 +51,7 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
           )}
           <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full sm:w-auto flex-1 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 dark:hover:bg-orange-950 dark:hover:text-orange-400">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto flex-1">
                 Read
               </Button>
             </DialogTrigger>
@@ -60,13 +60,13 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
                 <DialogTitle className="font-fraunces">{title}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 overflow-y-auto max-h-[calc(90vh-120px)] pr-2 sm:pr-4">
-                <div className="bg-gradient-to-br from-orange-50/50 to-pink-50/30 dark:from-orange-950/20 dark:to-pink-950/10 p-3 sm:p-4 rounded-lg border border-orange-100 dark:border-orange-900">
+                <div className="bg-secondary/50 border border-border p-3 sm:p-4 rounded-xl">
                   <pre className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed font-sans">{examplePrompt}</pre>
                 </div>
                 <Button
                   onClick={() => copyToClipboard(examplePrompt)}
                   variant="outline"
-                  className="w-full border-orange-200 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-800 dark:hover:bg-orange-950 sticky bottom-0 bg-background"
+                  className="w-full sticky bottom-0 bg-background"
                 >
                   <Copy className="w-4 h-4 mr-2" />
                   Copy to Clipboard
@@ -78,7 +78,7 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
           <Button 
             variant="outline" 
             size="sm" 
-            className="w-full sm:w-auto flex-1 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 dark:hover:bg-orange-950 dark:hover:text-orange-400"
+            className="w-full sm:w-auto flex-1"
             onClick={() => onRemix?.(examplePrompt)}
           >
             Remix

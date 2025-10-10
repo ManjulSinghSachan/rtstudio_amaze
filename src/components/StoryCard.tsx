@@ -127,7 +127,7 @@ export const StoryCard = ({ id, title, story, attribution }: StoryCardProps) => 
             variant="outline" 
             size="sm" 
             onClick={handleExpand} 
-            className="w-full sm:w-auto hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-950 dark:hover:text-green-400"
+            className="w-full sm:w-auto"
           >
             {isExpanded ? "Hide Notes" : "Notes"}
           </Button>
@@ -137,7 +137,7 @@ export const StoryCard = ({ id, title, story, attribution }: StoryCardProps) => 
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full sm:w-auto hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-950 dark:hover:text-green-400"
+                className="w-full sm:w-auto"
               >
                 Get in Touch
               </Button>
@@ -189,10 +189,10 @@ export const StoryCard = ({ id, title, story, attribution }: StoryCardProps) => 
             <div className="space-y-2">
               {notes.length > 0 ? (
                 notes.map((note) => (
-                  <div key={note.id} className="bg-muted/50 p-3 rounded text-sm">
-                    <p className="mb-1">{note.note_text}</p>
-                    <p className="text-xs text-muted-foreground">— {note.author_name}</p>
-                  </div>
+                <div key={note.id} className="bg-secondary/50 border border-border p-3 rounded-lg text-sm">
+                  <p className="mb-1">{note.note_text}</p>
+                  <p className="text-xs text-muted-foreground">— {note.author_name}</p>
+                </div>
                 ))
               ) : (
                 <p className="text-sm text-muted-foreground">No notes yet. Be the first to add one!</p>

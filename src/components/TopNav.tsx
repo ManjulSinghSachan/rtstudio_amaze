@@ -24,7 +24,7 @@ export const TopNav = () => {
                 className={cn(
                   "text-xs sm:text-sm font-medium transition-colors border-b-2 pb-1 whitespace-nowrap",
                   location.pathname === item.path
-                    ? "border-foreground text-foreground"
+                    ? "border-primary text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >

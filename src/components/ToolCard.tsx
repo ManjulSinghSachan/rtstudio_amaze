@@ -113,12 +113,12 @@ export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
   };
 
   return (
-    <Card className="border-l-4 border-l-blue-400 hover:shadow-lg transition-shadow">
+    <Card className="border-l-4 border-l-primary hover:shadow-md transition-shadow">
       <CardContent className="p-4 sm:p-6">
         <div className="flex items-start justify-between gap-3 mb-3 sm:mb-2">
           <h3 className="text-lg sm:text-xl font-bold font-fraunces text-foreground flex-1">{name}</h3>
           <a href={url} target="_blank" rel="noopener noreferrer" className="shrink-0">
-            <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-blue-600 transition-colors" />
+            <ExternalLink className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
           </a>
         </div>
         <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{description}</p>
@@ -128,7 +128,7 @@ export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
             variant="outline" 
             size="sm" 
             onClick={handleExpand} 
-            className="w-full sm:w-auto hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 dark:hover:bg-blue-950 dark:hover:text-blue-400"
+            className="w-full sm:w-auto"
           >
             {isExpanded ? "Hide Notes" : "Notes"}
           </Button>
@@ -138,7 +138,7 @@ export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full sm:w-auto hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 dark:hover:bg-blue-950 dark:hover:text-blue-400"
+                className="w-full sm:w-auto"
               >
                 Play Group
               </Button>
@@ -185,10 +185,10 @@ export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
             <div className="space-y-2">
               {notes.length > 0 ? (
                 notes.map((note) => (
-                  <div key={note.id} className="bg-muted/50 p-3 rounded text-sm">
-                    <p className="mb-1">{note.note_text}</p>
-                    <p className="text-xs text-muted-foreground">— {note.author_name}</p>
-                  </div>
+                <div key={note.id} className="bg-secondary/50 border border-border p-3 rounded-lg text-sm">
+                  <p className="mb-1">{note.note_text}</p>
+                  <p className="text-xs text-muted-foreground">— {note.author_name}</p>
+                </div>
                 ))
               ) : (
                 <p className="text-sm text-muted-foreground">No notes yet. Be the first to add one!</p>

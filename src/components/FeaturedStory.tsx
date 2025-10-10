@@ -29,7 +29,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              
+              <img src={blockPartyImage} alt="Block party with neighbors celebrating together" className="w-full rounded-lg" />
             </div>
 
             <p>
@@ -59,7 +59,7 @@ export const FeaturedStory = () => {
             </ul>
 
             <div className="my-6 sm:my-8">
-              
+              <img src={dreamsImage} alt="Community dreams and aspirations" className="w-full rounded-lg" />
             </div>
 
             <p>
@@ -96,7 +96,7 @@ export const FeaturedStory = () => {
               The Outer Sunset story is one thread in a bigger tapestry. Across neighborhoods and towns, people are not waiting for platforms — we're making them, hyper-locally, with the people around us. Sometimes they're flyers and clipboards. Sometimes they're shared spreadsheets or little websites. Sometimes they're small, home-cooked apps. The point isn't scale — it's whether what we build brings us closer.
             </p>
 
-            <p className="text-base sm:text-lg font-medium bg-muted/50 p-4 sm:p-6 rounded-lg">
+            <p className="text-base sm:text-lg font-medium bg-secondary/30 border border-border p-4 sm:p-6 rounded-xl">
               So here's my invitation: take any of this — coffee and donuts, a group chat, an offers-needs-dreams circle, a neighbor hub, a local event site, a story circle — and <strong>remix it for your own unfolding story</strong>. Try something humble, and see what happens when people show up, care for each other, and build together. That's how new culture takes root.
             </p>
           </div>

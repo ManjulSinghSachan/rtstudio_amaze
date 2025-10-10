@@ -108,10 +108,10 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto border-2 border-orange-200 dark:border-orange-800">
+    <Card className="w-full max-w-4xl mx-auto border border-border shadow-sm">
       <div className="p-4 sm:p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-5 h-5 text-orange-500" />
+          <Sparkles className="w-5 h-5 text-primary" />
           <h2 className="text-xl sm:text-2xl font-bold font-fraunces">Relational Tech Sidekick</h2>
         </div>
         
@@ -129,10 +129,10 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
                 className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] p-3 sm:p-4 rounded-lg ${
+                  className={`max-w-[85%] p-3 sm:p-4 rounded-xl ${
                     message.role === "user"
-                      ? "bg-orange-100 dark:bg-orange-950 text-foreground"
-                      : "bg-muted"
+                      ? "bg-primary/10 border border-primary/20 text-foreground"
+                      : "bg-secondary/50 border border-border"
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
@@ -152,7 +152,7 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[85%] p-3 sm:p-4 rounded-lg bg-muted">
+                <div className="max-w-[85%] p-3 sm:p-4 rounded-xl bg-secondary/50 border border-border">
                   <p className="text-sm text-muted-foreground animate-pulse">Thinking...</p>
                 </div>
               </div>
@@ -177,7 +177,7 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
           <Button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="self-end bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+            className="self-end bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             <Send className="w-4 h-4" />
           </Button>
