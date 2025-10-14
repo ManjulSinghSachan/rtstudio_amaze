@@ -21,10 +21,12 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -122,7 +124,7 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
             </p>
           </div>
         ) : (
-          <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+          <div ref={messagesContainerRef} className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
             {messages.map((message, idx) => (
               <div
                 key={idx}
@@ -157,7 +159,6 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
         )}
 
