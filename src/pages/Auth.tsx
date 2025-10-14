@@ -26,10 +26,22 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      // For simplicity, using a basic password check
-      // In production, you'd want proper authentication
-      if (password === "studio2025") {
-        // Create a simple session indicator
+      // Call edge function to verify password against database
+      const { data, error } = await supabase.functions.invoke('verify-password', {
+        body: { password }
+      });
+
+      if (error) {
+        console.error('Verification error:', error);
+        toast({
+          title: "Error",
+          description: "Authentication service unavailable. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data?.valid) {
         localStorage.setItem("studio_access", "granted");
         toast({
           title: "Welcome to the Studio",
@@ -44,6 +56,7 @@ const Auth = () => {
         });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
         description: "An error occurred. Please try again.",

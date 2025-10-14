@@ -28,11 +28,17 @@ serve(async (req) => {
     // Get the latest user message for context search
     const latestUserMessage = messages[messages.length - 1]?.content || '';
 
+    // Sanitize user input to prevent SQL injection
+    // Remove special SQL characters and limit length
+    const sanitizedMessage = latestUserMessage
+      .replace(/[%_,]/g, '')
+      .slice(0, 100);
+
     // Search for relevant prompts in the database
     const { data: relevantPrompts, error: dbError } = await supabase
       .from('prompts')
       .select('title, category, description, example_prompt')
-      .or(`title.ilike.%${latestUserMessage}%,description.ilike.%${latestUserMessage}%,category.ilike.%${latestUserMessage}%,example_prompt.ilike.%${latestUserMessage}%`)
+      .or(`title.ilike.%${sanitizedMessage}%,description.ilike.%${sanitizedMessage}%,category.ilike.%${sanitizedMessage}%,example_prompt.ilike.%${sanitizedMessage}%`)
       .limit(5);
 
     if (dbError) {
