@@ -124,7 +124,7 @@ export const PromptChat = ({ initialPrompt, onClearInitialPrompt }: PromptChatPr
             </p>
           </div>
         ) : (
-          <div ref={messagesContainerRef} className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+          <div ref={messagesContainerRef} className="space-y-4 max-h-[700px] overflow-y-auto pr-2">
             {messages.map((message, idx) => (
               <div
                 key={idx}
