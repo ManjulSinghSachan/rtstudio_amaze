@@ -53,7 +53,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img src={dreamsImage} alt="Neighbors sharing dreams and aspirations" className="w-full rounded-lg" />
+              
             </div>
 
             <h3 className="text-xl sm:text-2xl font-bold mt-8 mb-4">Technology as Relational Craft</h3>
