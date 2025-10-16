@@ -65,8 +65,10 @@ export const Tour = () => {
           left = window.innerWidth / 2 - cardWidth / 2;
       }
 
-      // Keep within viewport bounds
-      top = Math.max(spacing, Math.min(top, window.innerHeight - cardHeight - spacing));
+      // Account for nav bar height (64px) and keep within viewport bounds
+      const navHeight = 64;
+      const minTop = navHeight + spacing;
+      top = Math.max(minTop, Math.min(top, window.innerHeight - cardHeight - spacing));
       left = Math.max(spacing, Math.min(left, window.innerWidth - cardWidth - spacing));
 
       setPosition({ top, left });
@@ -105,7 +107,7 @@ export const Tour = () => {
           left: `${position.left}px`,
         }}
       >
-        <div className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 border-2 border-primary/30 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-card border-2 border-primary/30 rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-primary/15 px-4 py-3 border-b border-primary/20 flex items-center justify-between">
             <div className="flex items-center gap-2">
