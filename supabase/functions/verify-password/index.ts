@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.74.0';
 import { create } from 'https://deno.land/x/djwt@v3.0.1/mod.ts';
+import * as bcrypt from 'https://deno.land/x/bcrypt@v0.4.1/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -43,8 +44,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Verify password (simple comparison for now - in production use bcrypt)
-    const isValid = data?.password_hash === password;
+    // Verify password using bcrypt
+    const isValid = await bcrypt.compare(password, data?.password_hash || '');
 
     if (!isValid) {
       return new Response(
