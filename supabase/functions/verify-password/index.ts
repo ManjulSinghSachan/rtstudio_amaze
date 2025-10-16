@@ -29,12 +29,13 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Query the credentials table
+    // Query the most recent credentials row safely
     const { data, error } = await supabase
       .from('access_credentials')
-      .select('password_hash')
+      .select('password_hash, created_at')
+      .order('created_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error('Database error:', error);
