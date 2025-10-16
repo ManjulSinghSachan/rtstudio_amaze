@@ -80,7 +80,7 @@ export const FeaturedStory = () => {
             </p>
 
             <div className="my-6 sm:my-8">
-              <img src={gatheringImage} alt="Neighbors gathering and connecting" className="w-full rounded-lg" />
+              
             </div>
 
             <p>Lately, we've been building some new ones together:</p>
