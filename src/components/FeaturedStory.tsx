@@ -1,6 +1,7 @@
 import flyerImage from "@/assets/flyer.png";
 import coffeeAndDonutsImage from "@/assets/coffee_and_donuts.jpeg";
-import whatsappImage from "@/assets/whatsapp_screenshot.png";
+import whatsappFeedbackImage from "@/assets/whatsapp_feedback.png";
+import birthdaySupplySiteImage from "@/assets/birthday_supply_site.png";
 import blockPartyImage from "@/assets/block_party.png";
 import chalkFlyersImage from "@/assets/chalk_flyers.png";
 
@@ -41,11 +42,13 @@ export const FeaturedStory = () => {
               As I paid attention to other block parties and third spaces, I noticed plenty of activity but no digital bulletin board. That inspired Outer Sunset Today, a neighborhood calendar that pulls from dozens of sites and menus into one place. It lets anyone upload a flyer, which AI scans and formats for review. People were really excited to see this! Building this also led me to sketch out a Neighborhood API: a shared format for how neighbors, stewards, and organizations might publish events and updates and other things relevant to neighborhood life, with the Outer Sunset as a reference implementation.
             </p>
 
-            <img src={whatsappImage} alt="WhatsApp conversation about Community Supplies" className="w-full max-w-sm mx-auto rounded-lg my-6" />
+            <img src={whatsappFeedbackImage} alt="WhatsApp feedback about Outer Sunset Today" className="w-full max-w-sm mx-auto rounded-lg my-6" />
 
             <p>
               Mid-spring, a friend mentioned buying party supplies they wanted other families to use, too. He had this intention but no system to offer them up. That night I built the first version of Community Supplies and texted him the link! Our local mutual aid group picked it up weeks later, asking me if they could spread it into parents' groups.
             </p>
+
+            <img src={birthdaySupplySiteImage} alt="Text conversation about Community Supplies site" className="w-full max-w-sm mx-auto rounded-lg my-6" />
 
             <p>
               Other pieces fell into place as needed: a custom linktree-like site at byfor.us to help me do neighborhood demos, a human-readable privacy and terms page, and a reusable footer that invited remixing each tool.
