@@ -125,8 +125,8 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt }: SidekickProps)
         </div>
 
         {messages.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center px-4 py-8">
-            <div className="space-y-4 max-w-sm">
+          <div className="flex items-center justify-center text-center px-4 py-12">
+            <div className="space-y-4 max-w-xs">
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                 <Sparkles className="w-6 h-6 text-primary" />
               </div>
