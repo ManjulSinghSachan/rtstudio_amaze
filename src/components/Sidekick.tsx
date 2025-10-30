@@ -39,15 +39,14 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt }: SidekickProps)
   }, [initialPrompt]);
 
   const getContextMessage = () => {
-    const path = location.pathname;
-    if (path === "/") {
-      return "I'm here to help you explore community stories and discuss how relational technology is being used in neighborhoods. Ask me about any story details or tools mentioned!";
-    } else if (path === "/prompt-pond") {
-      return "I'm here to help you remix prompts for your neighborhood! Share a prompt you'd like to adapt, or ask me questions about the prompts in the library.";
-    } else if (path === "/tools") {
-      return "I'm here to help you explore tools for building relational technology. Ask me which tools might work best for your project, or get recommendations based on your needs!";
+    if (location.pathname === '/') {
+      return "Ask me about the stories and the relational tech in them!";
+    } else if (location.pathname === '/prompt-pond') {
+      return "Share a prompt you'd like to adapt or ask me any questions you have!";
+    } else if (location.pathname === '/tools') {
+      return "Ask me which tools might work best for you or get recommendations based on your needs!";
     }
-    return "I'm here to help you explore, plan, and build with relational technology. How can I assist you?";
+    return "Ask me anything about community stories, prompts, and tools!";
   };
 
   const handleRemixPrompt = async (promptText: string) => {
@@ -126,16 +125,10 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt }: SidekickProps)
 
         {messages.length === 0 ? (
           <div className="flex items-center justify-center text-center px-4 py-12">
-            <div className="space-y-4 max-w-xs">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <Sparkles className="w-6 h-6 text-primary" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-base font-semibold">Start a conversation</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {getContextMessage()}
-                </p>
-              </div>
+            <div className="space-y-2 max-w-xs">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {getContextMessage()}
+              </p>
             </div>
           </div>
         ) : (
@@ -178,7 +171,7 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt }: SidekickProps)
           <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything..."
+            placeholder="Chat here..."
             className="min-h-[60px] resize-none"
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
