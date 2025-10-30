@@ -21,7 +21,7 @@ export const TopNav = () => {
     <nav className="border-b border-border bg-background sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
-          <h1 className="text-base sm:text-lg font-bold font-fraunces">Studio</h1>
+          <h1 className="text-base sm:text-lg font-bold font-fraunces">Relational Tech Studio</h1>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">

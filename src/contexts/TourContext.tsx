@@ -13,7 +13,7 @@ interface TourStep {
 
 const tourSteps: TourStep[] = [
   {
-    title: "Welcome to the Studio!",
+    title: "Welcome to Relational Tech Studio!",
     description: "Start by reading through some stories, gathering inspiration for what might unfold in your community.",
     route: "/",
     target: "[data-tour='stories-section']",

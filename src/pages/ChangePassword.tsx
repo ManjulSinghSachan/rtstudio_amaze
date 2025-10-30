@@ -92,7 +92,7 @@ export default function ChangePassword() {
             <CardTitle className="text-2xl font-fraunces">Change Password</CardTitle>
           </div>
           <CardDescription>
-            Update the shared access password for Studio
+            Update the shared access password for Relational Tech Studio
           </CardDescription>
         </CardHeader>
         <CardContent>

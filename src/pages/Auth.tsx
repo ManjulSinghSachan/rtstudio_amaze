@@ -44,7 +44,7 @@ const Auth = () => {
       if (data?.valid && data?.token) {
         localStorage.setItem("studio_session", data.token);
         toast({
-          title: "Welcome to the Studio",
+          title: "Welcome to Relational Tech Studio",
           description: "Access granted",
         });
         navigate("/");
@@ -94,7 +94,7 @@ const Auth = () => {
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
             disabled={isLoading}
           >
-            {isLoading ? "Accessing..." : "Enter Studio"}
+            {isLoading ? "Accessing..." : "Enter Relational Tech Studio"}
           </Button>
         </form>
       </div>
