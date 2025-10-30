@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopNav } from "@/components/TopNav";
 import { StoryCard } from "@/components/StoryCard";
+import { Sidekick } from "@/components/Sidekick";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -9,10 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const StoryBoard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [stories, setStories] = useState<any[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newStory, setNewStory] = useState("");
@@ -102,10 +105,12 @@ const StoryBoard = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <TopNav />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+      <div className="flex-1 flex overflow-hidden">
+        <main className="flex-1 overflow-y-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
           <div className="flex-1">
             <h2 className="text-3xl sm:text-4xl font-black font-fraunces mb-2 sm:mb-2">Community Stories</h2>
@@ -195,8 +200,18 @@ const StoryBoard = () => {
               />
             ))
           )}
+          </div>
         </div>
       </main>
+      
+      {!isMobile && (
+        <aside className="hidden lg:block w-96 border-l border-border bg-background overflow-y-auto">
+          <div className="h-full p-4">
+            <Sidekick />
+          </div>
+        </aside>
+      )}
+      </div>
     </div>
   );
 };

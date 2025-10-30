@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Copy, ExternalLink } from "lucide-react";
 
 interface PromptCardProps {
@@ -18,6 +20,15 @@ interface PromptCardProps {
 export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRemix }: PromptCardProps) => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+
+  const handleRemix = () => {
+    if (isMobile) {
+      navigate("/sidekick");
+    }
+    onRemix?.(examplePrompt);
+  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -79,7 +90,7 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
             variant="outline" 
             size="sm" 
             className="w-full sm:w-auto flex-1"
-            onClick={() => onRemix?.(examplePrompt)}
+            onClick={handleRemix}
           >
             Remix
           </Button>

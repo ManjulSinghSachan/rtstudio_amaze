@@ -9,7 +9,9 @@ import ToolsForCrafting from "./pages/ToolsForCrafting";
 import Auth from "./pages/Auth";
 import ChangePassword from "./pages/ChangePassword";
 import NotFound from "./pages/NotFound";
+import SidekickPage from "./pages/SidekickPage";
 import { TourProvider } from "./contexts/TourContext";
+import { SidekickProvider } from "./contexts/SidekickContext";
 import { Tour } from "./components/Tour";
 
 const queryClient = new QueryClient();
@@ -20,18 +22,21 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <TourProvider>
-          <Tour />
-          <Routes>
-            <Route path="/" element={<StoryBoard />} />
-            <Route path="/prompt-pond" element={<PromptPond />} />
-            <Route path="/tools" element={<ToolsForCrafting />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/change-password" element={<ChangePassword />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </TourProvider>
+        <SidekickProvider>
+          <TourProvider>
+            <Tour />
+            <Routes>
+              <Route path="/" element={<StoryBoard />} />
+              <Route path="/prompt-pond" element={<PromptPond />} />
+              <Route path="/tools" element={<ToolsForCrafting />} />
+              <Route path="/sidekick" element={<SidekickPage />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/change-password" element={<ChangePassword />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </TourProvider>
+        </SidekickProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

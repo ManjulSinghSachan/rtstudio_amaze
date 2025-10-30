@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { TopNav } from "@/components/TopNav";
 import { PromptCard } from "@/components/PromptCard";
-import { PromptChat } from "@/components/PromptChat";
+import { Sidekick } from "@/components/Sidekick";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -9,10 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useSidekick } from "@/contexts/SidekickContext";
 const PromptPond = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
+  const { messages } = useSidekick();
   const [prompts, setPrompts] = useState<any[]>([]);
   const [newTitle, setNewTitle] = useState("");
   const [newCategory, setNewCategory] = useState("");
@@ -84,25 +86,23 @@ const PromptPond = () => {
       setIsSubmitting(false);
     }
   };
-  return <div className="min-h-screen">
+  return <div className="min-h-screen flex flex-col">
       <TopNav />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-        <div className="mb-8 sm:mb-12" data-tour="chat-section">
-          <div className="text-center mb-4">
-            <h2 className="text-3xl sm:text-4xl font-black font-fraunces mb-2">Prompt Pond</h2>
-            <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
-              Chat with AI to remix prompts for your neighborhood.
-            </p>
-          </div>
-          
-          <PromptChat initialPrompt={remixPrompt} onClearInitialPrompt={() => setRemixPrompt("")} />
-        </div>
+      <div className="flex-1 flex overflow-hidden">
+        <main className="flex-1 overflow-y-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl sm:text-4xl font-black font-fraunces mb-2">Prompt Pond</h2>
+              <p className="text-muted-foreground text-sm max-w-2xl mx-auto">
+                {isMobile ? "Browse prompts below, then visit Sidekick to remix them." : "Browse prompts and use the Sidekick to remix them for your neighborhood."}
+              </p>
+            </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
-          <div className="flex-1">
-            <h3 className="text-2xl sm:text-3xl font-bold font-fraunces">Prompt Library</h3>
-          </div>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
+              <div className="flex-1">
+                <h3 className="text-2xl sm:text-3xl font-bold font-fraunces">Prompt Library</h3>
+              </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="w-full sm:w-auto shrink-0">Contribute a prompt</Button>
@@ -137,19 +137,31 @@ const PromptPond = () => {
                 </Button>
               </form>
             </DialogContent>
-          </Dialog>
-        </div>
+            </Dialog>
+            </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6" data-tour="prompts-grid">
-          {prompts.length === 0 ? <p className="text-muted-foreground col-span-2">No prompts yet. Be the first to share!</p> : prompts.map(prompt => <div key={prompt.id} id={prompt.id}><PromptCard id={prompt.id} title={prompt.title} category={prompt.category} examplePrompt={prompt.example_prompt} description={prompt.description} exampleUrl={prompt.title === "Hyperlocal Neighbor Hubs" ? "https://cozycorner.place/" : "#"} onRemix={promptText => {
-          setRemixPrompt(promptText);
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-          });
-        }} /></div>)}
-        </div>
-      </main>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6" data-tour="prompts-grid">
+              {prompts.length === 0 ? <p className="text-muted-foreground col-span-2">No prompts yet. Be the first to share!</p> : prompts.map(prompt => <div key={prompt.id} id={prompt.id}><PromptCard id={prompt.id} title={prompt.title} category={prompt.category} examplePrompt={prompt.example_prompt} description={prompt.description} exampleUrl={prompt.title === "Hyperlocal Neighbor Hubs" ? "https://cozycorner.place/" : "#"} onRemix={promptText => {
+              setRemixPrompt(promptText);
+              if (!isMobile) {
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+                });
+              }
+            }} /></div>)}
+            </div>
+          </div>
+        </main>
+        
+        {!isMobile && (
+          <aside className="hidden lg:block w-96 border-l border-border bg-background overflow-y-auto">
+            <div className="h-full p-4">
+              <Sidekick initialPrompt={remixPrompt} onClearInitialPrompt={() => setRemixPrompt("")} />
+            </div>
+          </aside>
+        )}
+      </div>
     </div>;
 };
 export default PromptPond;

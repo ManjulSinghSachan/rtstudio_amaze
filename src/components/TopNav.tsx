@@ -5,6 +5,7 @@ import { useTour } from "@/contexts/TourContext";
 import { HelpCircle, Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { name: "Stories", path: "/" },
@@ -16,6 +17,11 @@ export const TopNav = () => {
   const location = useLocation();
   const { startTour } = useTour();
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  const mobileNavItems = isMobile 
+    ? [...navItems, { name: "Sidekick", path: "/sidekick" }]
+    : navItems;
 
   return (
     <nav className="border-b border-border bg-background sticky top-0 z-50">
@@ -77,7 +83,7 @@ export const TopNav = () => {
               </SheetTrigger>
               <SheetContent side="right" className="w-64">
                 <nav className="flex flex-col gap-4 mt-8">
-                  {navItems.map((item) => (
+                  {mobileNavItems.map((item) => (
                     <Link
                       key={item.name}
                       to={item.path}
