@@ -118,8 +118,9 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
   };
 
   return (
-    <Card className="border-l-4 border-l-accent hover:shadow-md transition-shadow">
+    <Card className={`border-l-4 border-l-accent hover:shadow-md transition-shadow ${showFullStory ? 'lg:col-span-2' : ''}`}>
       <CardContent className="p-4 sm:p-6">
+        <div className={showFullStory ? 'lg:max-w-4xl lg:mx-auto' : ''}>
         <h3 className="text-base sm:text-lg font-semibold font-fraunces mb-2">{title}</h3>
         {!showFullStory && (
           <>
@@ -251,6 +252,7 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
             </form>
           </div>
         )}
+        </div>
       </CardContent>
     </Card>
   );
