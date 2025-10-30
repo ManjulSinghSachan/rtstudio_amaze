@@ -122,6 +122,7 @@ export type Database = {
         Row: {
           attribution: string
           created_at: string
+          full_story_text: string | null
           id: string
           story_text: string
           title: string | null
@@ -130,6 +131,7 @@ export type Database = {
         Insert: {
           attribution: string
           created_at?: string
+          full_story_text?: string | null
           id?: string
           story_text: string
           title?: string | null
@@ -138,6 +140,7 @@ export type Database = {
         Update: {
           attribution?: string
           created_at?: string
+          full_story_text?: string | null
           id?: string
           story_text?: string
           title?: string | null

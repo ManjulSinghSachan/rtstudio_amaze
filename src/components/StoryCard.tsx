@@ -13,15 +13,17 @@ interface StoryCardProps {
   title: string;
   story: string;
   attribution: string;
+  fullStory?: string;
 }
 
-export const StoryCard = ({ id, title, story, attribution }: StoryCardProps) => {
+export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCardProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showFullStory, setShowFullStory] = useState(false);
   const [notes, setNotes] = useState<any[]>([]);
   const [newNote, setNewNote] = useState("");
   const [noteName, setNoteName] = useState("");
@@ -122,7 +124,21 @@ export const StoryCard = ({ id, title, story, attribution }: StoryCardProps) => 
         <p className="text-sm mb-4 leading-relaxed">{story}</p>
         <p className="text-xs text-muted-foreground mb-4">— {attribution}</p>
         
+        {showFullStory && fullStory && (
+          <div className="prose prose-sm max-w-none mb-4 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: fullStory }} />
+        )}
+        
         <div className="flex flex-col sm:flex-row gap-2 mb-4">
+          {fullStory && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowFullStory(!showFullStory)} 
+              className="w-full sm:w-auto"
+            >
+              {showFullStory ? "Hide Full Story" : "Read Full Story"}
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="sm" 
