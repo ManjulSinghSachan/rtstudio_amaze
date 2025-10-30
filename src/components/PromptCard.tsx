@@ -5,7 +5,7 @@ import { Card, CardContent } from "./ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Copy, ExternalLink } from "lucide-react";
+import { Copy, ExternalLink, Sparkles } from "lucide-react";
 
 interface PromptCardProps {
   id: string;
@@ -92,6 +92,7 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
             className="w-full sm:w-auto flex-1"
             onClick={handleRemix}
           >
+            <Sparkles className="w-4 h-4 mr-2" />
             Remix
           </Button>
         </div>

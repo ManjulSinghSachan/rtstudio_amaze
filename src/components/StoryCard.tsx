@@ -7,6 +7,7 @@ import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { BookOpen, Pencil, Mail } from "lucide-react";
 
 interface StoryCardProps {
   id: string;
@@ -134,6 +135,7 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
                 onClick={() => setShowFullStory(false)} 
                 className="shrink-0"
               >
+                <BookOpen className="w-4 h-4 mr-2" />
                 Hide Full Story
               </Button>
             </div>
@@ -147,6 +149,7 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
                 onClick={handleExpand} 
                 className="w-full sm:w-auto"
               >
+                <Pencil className="w-4 h-4 mr-2" />
                 {isExpanded ? "Hide Notes" : "Notes"}
               </Button>
               
@@ -157,6 +160,7 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
                     size="sm" 
                     className="w-full sm:w-auto"
                   >
+                    <Mail className="w-4 h-4 mr-2" />
                     Get in Touch
                   </Button>
                 </DialogTrigger>
@@ -210,12 +214,13 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
             
             <div className="flex flex-col sm:flex-row gap-2 mb-4">
               {fullStory && (
-                <Button 
+              <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={() => setShowFullStory(true)} 
                   className="w-full sm:w-auto"
                 >
+                  <BookOpen className="w-4 h-4 mr-2" />
                   Read Full Story
                 </Button>
               )}
@@ -225,6 +230,7 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
                 onClick={handleExpand} 
                 className="w-full sm:w-auto"
               >
+                <Pencil className="w-4 h-4 mr-2" />
                 {isExpanded ? "Hide Notes" : "Notes"}
               </Button>
               
@@ -235,6 +241,7 @@ export const StoryCard = ({ id, title, story, attribution, fullStory }: StoryCar
                     size="sm" 
                     className="w-full sm:w-auto"
                   >
+                    <Mail className="w-4 h-4 mr-2" />
                     Get in Touch
                   </Button>
                 </DialogTrigger>

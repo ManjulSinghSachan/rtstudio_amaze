@@ -7,7 +7,7 @@ import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Pencil, Users } from "lucide-react";
 
 interface ToolCardProps {
   id: string;
@@ -130,6 +130,7 @@ export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
             onClick={handleExpand} 
             className="w-full sm:w-auto"
           >
+            <Pencil className="w-4 h-4 mr-2" />
             {isExpanded ? "Hide Notes" : "Notes"}
           </Button>
           
@@ -140,6 +141,7 @@ export const ToolCard = ({ id, name, description, url }: ToolCardProps) => {
                 size="sm" 
                 className="w-full sm:w-auto"
               >
+                <Users className="w-4 h-4 mr-2" />
                 Play Group
               </Button>
             </DialogTrigger>
