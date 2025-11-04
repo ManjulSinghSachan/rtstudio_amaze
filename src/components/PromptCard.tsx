@@ -73,15 +73,26 @@ export const PromptCard = ({ title, examplePrompt, description, exampleUrl, onRe
               <div className="space-y-4 overflow-y-auto max-h-[calc(90vh-120px)] pr-2 sm:pr-4">
                 <div className="bg-secondary/50 border border-border p-4 sm:p-6 rounded-xl">
                   <div className="text-sm sm:text-base leading-relaxed font-sans space-y-4">
-                    {examplePrompt.split(/\\n\\n/).map((section, idx) => (
-                      <div key={idx} className="space-y-2">
-                        {section.split(/\\n/).map((line, lineIdx) => (
-                          <p key={lineIdx} className={line.trim() ? "" : "h-2"}>
-                            {line}
-                          </p>
-                        ))}
-                      </div>
-                    ))}
+                    {examplePrompt.split('\n\n').map((section, idx) => {
+                      const lines = section.split('\n');
+                      return (
+                        <div key={idx} className="space-y-2">
+                          {lines.map((line, lineIdx) => {
+                            // Check if line looks like a header (all caps, or ends with colon, or very short)
+                            const isHeader = line === line.toUpperCase() && line.length > 0 || 
+                                           line.trim().endsWith(':') && line.length < 50;
+                            return (
+                              <p 
+                                key={lineIdx} 
+                                className={`${!line.trim() ? 'h-2' : ''} ${isHeader ? 'font-semibold mt-3 first:mt-0' : ''}`}
+                              >
+                                {line}
+                              </p>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
                 <Button
