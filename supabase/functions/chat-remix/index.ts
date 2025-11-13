@@ -46,56 +46,114 @@ serve(async (req) => {
 
     console.log('Extracted keywords:', keywords);
 
-    // Search for relevant prompts using weighted approach
+    // Search for relevant content from all library sources
     let relevantPrompts: any[] = [];
+    let relevantStories: any[] = [];
+    let relevantTools: any[] = [];
     
     if (keywords.length > 0) {
       // Build search conditions for each keyword
-      const searchConditions = keywords.map((keyword: string) => {
+      const promptSearchConditions = keywords.map((keyword: string) => {
         const sanitized = keyword.replace(/[%_]/g, '');
         return `title.ilike.%${sanitized}%,category.ilike.%${sanitized}%,description.ilike.%${sanitized}%`;
       }).join(',');
 
-      const { data: foundPrompts, error: dbError } = await supabase
-        .from('prompts')
-        .select('title, category, description, example_prompt')
-        .or(searchConditions)
-        .limit(10);
+      const storySearchConditions = keywords.map((keyword: string) => {
+        const sanitized = keyword.replace(/[%_]/g, '');
+        return `title.ilike.%${sanitized}%,story_text.ilike.%${sanitized}%,attribution.ilike.%${sanitized}%`;
+      }).join(',');
 
-      if (dbError) {
-        console.error('Error fetching prompts:', dbError);
-      } else if (foundPrompts) {
-        // Weight and score results
-        relevantPrompts = foundPrompts.map((prompt: any) => {
+      const toolSearchConditions = keywords.map((keyword: string) => {
+        const sanitized = keyword.replace(/[%_]/g, '');
+        return `name.ilike.%${sanitized}%,description.ilike.%${sanitized}%`;
+      }).join(',');
+
+      // Fetch all content types in parallel
+      const [promptsResult, storiesResult, toolsResult] = await Promise.all([
+        supabase.from('prompts').select('title, category, description, example_prompt').or(promptSearchConditions).limit(10),
+        supabase.from('stories').select('title, story_text, attribution, full_story_text').or(storySearchConditions).limit(10),
+        supabase.from('tools').select('name, description, url').or(toolSearchConditions).limit(10)
+      ]);
+
+      // Process prompts
+      if (promptsResult.data) {
+        relevantPrompts = promptsResult.data.map((prompt: any) => {
           let score = 0;
           const titleLower = prompt.title.toLowerCase();
           const categoryLower = prompt.category.toLowerCase();
           const descLower = (prompt.description || '').toLowerCase();
           
           keywords.forEach((keyword: string) => {
-            if (titleLower.includes(keyword)) score += 10; // Title matches are most important
+            if (titleLower.includes(keyword)) score += 10;
             if (categoryLower.includes(keyword)) score += 5;
             if (descLower.includes(keyword)) score += 2;
           });
           
           return { ...prompt, score };
-        })
-        .sort((a: any, b: any) => b.score - a.score) // Sort by score descending
-        .slice(0, 5); // Keep top 5
-        
-        console.log('Found prompts with scores:', relevantPrompts.map((p: any) => ({ title: p.title, score: p.score })));
+        }).sort((a: any, b: any) => b.score - a.score).slice(0, 3);
       }
+
+      // Process stories
+      if (storiesResult.data) {
+        relevantStories = storiesResult.data.map((story: any) => {
+          let score = 0;
+          const titleLower = (story.title || '').toLowerCase();
+          const textLower = story.story_text.toLowerCase();
+          
+          keywords.forEach((keyword: string) => {
+            if (titleLower.includes(keyword)) score += 10;
+            if (textLower.includes(keyword)) score += 3;
+          });
+          
+          return { ...story, score };
+        }).sort((a: any, b: any) => b.score - a.score).slice(0, 3);
+      }
+
+      // Process tools
+      if (toolsResult.data) {
+        relevantTools = toolsResult.data.map((tool: any) => {
+          let score = 0;
+          const nameLower = tool.name.toLowerCase();
+          const descLower = tool.description.toLowerCase();
+          
+          keywords.forEach((keyword: string) => {
+            if (nameLower.includes(keyword)) score += 10;
+            if (descLower.includes(keyword)) score += 5;
+          });
+          
+          return { ...tool, score };
+        }).sort((a: any, b: any) => b.score - a.score).slice(0, 3);
+      }
+
+      console.log('Found content:', {
+        prompts: relevantPrompts.map(p => ({ title: p.title, score: p.score })),
+        stories: relevantStories.map(s => ({ title: s.title, score: s.score })),
+        tools: relevantTools.map(t => ({ name: t.name, score: t.score }))
+      });
     }
 
-    // Build prompt library context
-    let promptLibraryContext = '';
-    if (relevantPrompts && relevantPrompts.length > 0) {
-      promptLibraryContext = `\n\nRELEVANT PROMPTS FROM THE LIBRARY:\n${relevantPrompts.map(p => 
+    // Build library context
+    let libraryContext = '';
+    
+    if (relevantPrompts.length > 0) {
+      libraryContext += `\n\nRELEVANT PROMPTS FROM THE LIBRARY:\n${relevantPrompts.map(p => 
         `\n---\nTitle: ${p.title}\nCategory: ${p.category}\nDescription: ${p.description || 'N/A'}\nExample Prompt:\n${p.example_prompt}\n---`
       ).join('\n')}`;
     }
 
-    const systemPrompt = `You are the Prompt Remix Assistant for the Relational Technology Project. Your job is to help people create customized prompts that they can use in AI builders like Lovable or Dyad to build relational tech tools for their neighborhoods.
+    if (relevantStories.length > 0) {
+      libraryContext += `\n\nRELEVANT STORIES FROM THE LIBRARY:\n${relevantStories.map(s => 
+        `\n---\nTitle: ${s.title || 'Untitled'}\nAttribution: ${s.attribution || 'Anonymous'}\nStory:\n${s.full_story_text || s.story_text}\n---`
+      ).join('\n')}`;
+    }
+
+    if (relevantTools.length > 0) {
+      libraryContext += `\n\nRELEVANT TOOLS FROM THE LIBRARY:\n${relevantTools.map(t => 
+        `\n---\nName: ${t.name}\nDescription: ${t.description}\nURL: ${t.url}\n---`
+      ).join('\n')}`;
+    }
+
+    const systemPrompt = `You are Sidekick, an AI assistant for the Relational Technology Studio. You help people explore stories, prompts, and tools from the library, and guide them in creating relational tech for their neighborhoods.
 
 CRITICAL: Do not use markdown formatting in your responses. Write in plain text only - no asterisks, no hashtags, no special formatting. Use simple line breaks and natural language.
 
@@ -114,37 +172,39 @@ HABITS OF THE RELATIONAL TECH HEART:
 - Assume the tool will change, so design for more stewardship and shared ownership
 - Welcome messiness and wonder
 
-YOUR CORE JOB:
-When someone wants to remix a prompt, guide them through a conversational process:
-1. Ask about their neighborhood's context (location, community characteristics, unique needs)
-2. Ask what they'd like to add, change, or customize about the tool
-3. Optionally suggest combinations with other relational tech tools if relevant (but don't be pushy)
-4. Deliver a clear, complete prompt that can be copy-pasted directly into Lovable or Dyad
+YOUR CAPABILITIES:
+1. EXPLORE THE LIBRARY: Help users browse and understand stories, prompts, and tools
+   - Answer questions about specific stories or tools
+   - Make connections between different library items
+   - Share relevant examples when asked
 
-AVAILABLE RELATIONAL TECH TOOLS IN PROMPT POND:
-You should be aware of these types of tools (users can see specific examples):
-- Coffee & Donuts Rituals (lightweight neighbor gatherings)
-- Block Party Kits (tools for organizing street events)
-- Neighbor Hubs (simple sites that collect local events and resources)
-- Community Supplies (sharing tools and party supplies)
-- Neighbor Stories (story circles at local coffee shops)
-- Offers, Needs, and Dreams (surfacing gifts and needs for connection)
-- Local Event Sites (aggregating neighborhood happenings)
+2. REMIX PROMPTS: Guide users through creating customized prompts for their neighborhoods
+   - Ask about their neighborhood's context (location, community characteristics, unique needs)
+   - Ask what they'd like to add, change, or customize about the tool
+   - Gather enough detail about their vision and constraints
+   - Deliver a clear, complete prompt that can be copy-pasted directly into Lovable or Dyad
+   - Suggest combinations with other relational tech tools if relevant (but don't be pushy)
+
+3. HELP WITH CONTRIBUTIONS: Support users in sharing their own stories, prompts, or tools
+   - Ask clarifying questions to help them articulate their ideas
+   - Draft contribution text for them to review and submit
 
 YOUR STYLE:
 - Be warm, conversational, and genuinely curious about their neighborhood
 - Keep responses focused and helpful - no fluff
 - Ask clarifying questions when needed
-- When delivering the final prompt, make it clear, actionable, and ready to use
+- When delivering a final prompt, make it clear, actionable, and ready to use
 - Celebrate the small-scale, hyperlocal nature of what they're building
 - Remember: these are village-scale tools built by and for neighbors
+- When referencing specific library items, mention their titles so users can find them
 
-IMPORTANT:
+IMPORTANT FOR PROMPT REMIXING:
+- Don't rush to deliver the prompt - gather context first
 - The final prompt you deliver should be a complete prompt ready for an AI builder
 - Always acknowledge the specific context they share about their neighborhood
 - Gently remind them that the tool will likely change and that's okay
 
-Begin by understanding what they want to build or remix, then guide them thoughtfully through the process.${promptLibraryContext}`;
+Begin by understanding what they're looking for - whether that's exploring the library, remixing a prompt, or contributing something new.${libraryContext}`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
