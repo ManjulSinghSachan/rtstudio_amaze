@@ -21,6 +21,7 @@ interface LibraryItem {
   url?: string;
   fullContent?: string;
   examplePrompt?: string;
+  imageUrls?: string[];
 }
 
 const Library = () => {
@@ -99,6 +100,7 @@ const Library = () => {
           summary: story.story_text.slice(0, 120) + "...",
           author: story.attribution,
           fullContent: story.full_story_text || story.story_text,
+          imageUrls: story.image_urls || [],
         })),
         ...(promptsData.data || []).map((prompt) => ({
           id: prompt.id,

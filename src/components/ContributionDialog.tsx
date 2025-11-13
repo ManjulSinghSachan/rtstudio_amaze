@@ -7,7 +7,7 @@ import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Sparkles, Wrench, BookOpen } from "lucide-react";
+import { Plus, Sparkles, Wrench, BookOpen, Upload, X } from "lucide-react";
 
 type ContributionType = "story" | "prompt" | "tool" | null;
 
@@ -26,6 +26,7 @@ export const ContributionDialog = ({ open, onOpenChange, onSuccess }: Contributi
   const [storyTitle, setStoryTitle] = useState("");
   const [storyText, setStoryText] = useState("");
   const [storyAttribution, setStoryAttribution] = useState("");
+  const [storyImages, setStoryImages] = useState<File[]>([]);
 
   // Prompt fields
   const [promptTitle, setPromptTitle] = useState("");
@@ -43,6 +44,7 @@ export const ContributionDialog = ({ open, onOpenChange, onSuccess }: Contributi
     setStoryTitle("");
     setStoryText("");
     setStoryAttribution("");
+    setStoryImages([]);
     setPromptTitle("");
     setPromptDescription("");
     setPromptExample("");
@@ -52,16 +54,51 @@ export const ContributionDialog = ({ open, onOpenChange, onSuccess }: Contributi
     setToolUrl("");
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setStoryImages((prev) => [...prev, ...files].slice(0, 5)); // Limit to 5 images
+  };
+
+  const removeImage = (index: number) => {
+    setStoryImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       if (contributionType === "story") {
+        // Upload images if any
+        let imageUrls: string[] = [];
+        if (storyImages.length > 0) {
+          const uploadPromises = storyImages.map(async (file) => {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+              .from('story-images')
+              .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+              .from('story-images')
+              .getPublicUrl(filePath);
+
+            return publicUrl;
+          });
+
+          imageUrls = await Promise.all(uploadPromises);
+        }
+
         const { error } = await supabase.from("stories").insert({
           title: storyTitle,
           story_text: storyText,
+          full_story_text: storyText,
           attribution: storyAttribution,
+          image_urls: imageUrls.length > 0 ? imageUrls : null,
         });
         if (error) throw error;
         toast({ title: "Story shared!", description: "Your story has been added to the library." });
@@ -200,6 +237,41 @@ export const ContributionDialog = ({ open, onOpenChange, onSuccess }: Contributi
                       placeholder="Your name or 'Anonymous'"
                       required
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="storyImages">Photos (optional, up to 5)</Label>
+                    <div className="flex flex-col gap-2">
+                      <Input
+                        id="storyImages"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="cursor-pointer"
+                      />
+                      {storyImages.length > 0 && (
+                        <div className="grid grid-cols-2 gap-2">
+                          {storyImages.map((file, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt={`Preview ${index + 1}`}
+                                className="w-full h-24 object-cover rounded border"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => removeImage(index)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </>
               )}

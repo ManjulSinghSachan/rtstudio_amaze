@@ -124,6 +124,7 @@ export type Database = {
           created_at: string
           full_story_text: string | null
           id: string
+          image_urls: string[] | null
           story_text: string
           title: string | null
           user_id: string | null
@@ -133,6 +134,7 @@ export type Database = {
           created_at?: string
           full_story_text?: string | null
           id?: string
+          image_urls?: string[] | null
           story_text: string
           title?: string | null
           user_id?: string | null
@@ -142,6 +144,7 @@ export type Database = {
           created_at?: string
           full_story_text?: string | null
           id?: string
+          image_urls?: string[] | null
           story_text?: string
           title?: string | null
           user_id?: string | null

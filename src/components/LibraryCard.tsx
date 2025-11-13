@@ -19,6 +19,7 @@ interface LibraryItem {
   url?: string;
   fullContent?: string;
   examplePrompt?: string;
+  imageUrls?: string[];
 }
 
 interface LibraryCardProps {
@@ -109,9 +110,26 @@ export const LibraryCard = ({ item }: LibraryCardProps) => {
           
           <div className="space-y-4">
             {item.type === "story" && item.fullContent && (
-              <div className="bg-secondary/50 border border-border p-4 rounded-lg">
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{item.fullContent}</p>
-              </div>
+              <>
+                <div className="bg-secondary/50 border border-border p-4 rounded-lg">
+                  <div 
+                    className="text-sm leading-relaxed prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: item.fullContent }}
+                  />
+                </div>
+                {item.imageUrls && item.imageUrls.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {item.imageUrls.map((url, index) => (
+                      <img
+                        key={index}
+                        src={url}
+                        alt={`Story image ${index + 1}`}
+                        className="w-full rounded-lg border border-border"
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
             )}
             
             {item.type === "prompt" && item.examplePrompt && (
