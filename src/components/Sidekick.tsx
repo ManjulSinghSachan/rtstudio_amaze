@@ -55,7 +55,7 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
   }, [initialPrompt]);
 
   const getWelcomeMessage = () => {
-    return "Welcome! I can help you learn about relational tech and build your own tools. What are we building today?";
+    return "I can help you learn about relational tech and build your own tools. What are we crafting today?";
   };
 
   const extractLibraryItems = (content: string) => {
@@ -212,7 +212,7 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
 
   return (
     <div id="sidekick-chat" className={`w-full ${fullPage ? 'max-w-4xl' : 'max-w-5xl'} mx-auto ${!fullPage && 'mb-8'} scroll-mt-20 flex flex-col gap-4`}>
-      <Card className={`flex flex-col border-2 border-primary/30 shadow-xl bg-gradient-to-b from-primary/5 to-background ${fullPage ? 'h-[600px]' : 'h-[600px]'}`}>
+      <Card className={`flex flex-col border-2 border-primary/30 shadow-xl bg-gradient-to-b from-primary/5 to-background ${fullPage ? 'h-[500px]' : 'h-[500px]'}`}>
         <div className="flex items-center gap-2 p-4 sm:p-6 pb-0 shrink-0">
           <Sparkles className="w-5 h-5 text-primary" />
           <h2 className="text-xl font-bold font-fraunces">Sidekick</h2>
@@ -228,18 +228,18 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => setInput("Show me some community stories")}
+                  onClick={() => setInput("Help me find a prompt to remix")}
                   className="text-xs"
                 >
-                  Browse Stories
+                  Remix Something
                 </Button>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  onClick={() => setInput("Help me find a prompt about neighbor gatherings")}
+                  onClick={() => setInput("Show me some community stories")}
                   className="text-xs"
                 >
-                  Remix a Prompt
+                  Discover Stories
                 </Button>
                 <Button 
                   variant="outline" 
