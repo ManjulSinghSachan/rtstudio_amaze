@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTour } from "@/contexts/TourContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { ServiceberriesCounter } from "@/components/ServiceberriesCounter";
 import { HelpCircle, Menu, X, User, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
@@ -61,6 +62,8 @@ export const TopNav = () => {
                 </Link>
               ))}
             </div>
+            
+            <ServiceberriesCounter variant="nav" />
             
             <Button
               variant="ghost"
