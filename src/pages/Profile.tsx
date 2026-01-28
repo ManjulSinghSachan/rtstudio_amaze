@@ -3,6 +3,8 @@ import { TopNav } from "@/components/TopNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfileOnboarding } from "@/components/ProfileOnboarding";
 import { VisionBoard } from "@/components/VisionBoard";
+import { CommitmentsList } from "@/components/CommitmentsList";
+import { ServiceberriesCounter } from "@/components/ServiceberriesCounter";
 import { Button } from "@/components/ui/button";
 import { User, MapPin, Sparkles, Settings } from "lucide-react";
 
@@ -70,19 +72,19 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Serviceberries */}
+        <div className="mb-8 p-6 rounded-lg border border-border">
+          <ServiceberriesCounter variant="profile" />
+        </div>
+
         {/* Vision Board */}
         <div className="mb-8">
           <VisionBoard />
         </div>
 
-        {/* Commitments Placeholder */}
-        <div>
-          <h2 className="text-lg font-bold mb-4">Commitments</h2>
-          <div className="p-8 rounded-lg border-2 border-dashed border-border text-center">
-            <p className="text-muted-foreground">
-              Commitments you make during chat sessions will be tracked here.
-            </p>
-          </div>
+        {/* Commitments */}
+        <div className="mb-8">
+          <CommitmentsList />
         </div>
       </div>
     </div>

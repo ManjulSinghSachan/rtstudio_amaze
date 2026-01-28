@@ -61,6 +61,28 @@ const contributionTools = [
         additionalProperties: false
       }
     }
+  },
+  {
+    type: "function",
+    function: {
+      name: "record_commitment",
+      description: "Record a commitment the user has made during conversation. Only call this AFTER the user confirms they want to track this commitment.",
+      parameters: {
+        type: "object",
+        properties: {
+          commitment_text: { 
+            type: "string", 
+            description: "The commitment in the user's own words" 
+          },
+          context: { 
+            type: "string", 
+            description: "Brief context from the conversation about why this commitment matters" 
+          }
+        },
+        required: ["commitment_text"],
+        additionalProperties: false
+      }
+    }
   }
 ];
 
@@ -361,6 +383,11 @@ IMPORTANT FOR CONTRIBUTIONS:
 - NEVER call submission functions without explicit user consent
 - If they seem hesitant, reassure them that their contribution can inspire others even if it's imperfect
 
+COMMITMENT TRACKING:
+When you notice the user making a commitment during conversation (e.g., "I'm going to try this at our next meeting", "I'll reach out to my neighbor about this", "I want to organize a gathering"), gently acknowledge it and ask:
+"That sounds like a commitment! Would you like me to track this for you? I can add it to your profile so you can revisit it later."
+Only call the record_commitment tool AFTER they confirm they want to track it.
+
 Begin by understanding what they're looking for - whether that's exploring the library, remixing a prompt, or contributing something new.${profileContext}${libraryContext}`;
 
     // Make the AI call with tools enabled
@@ -442,6 +469,55 @@ Begin by understanding what they're looking for - whether that's exploring the l
           description: args.description,
           url: args.url
         }).select('id').single();
+      } else if (functionName === 'record_commitment') {
+        // Handle commitment recording
+        if (!userId) {
+          return new Response(
+            JSON.stringify({ 
+              response: "I'd love to track this commitment for you, but you'll need to be signed in first. Once you're logged in, I can save commitments to your profile.",
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
+        const commitmentResult = await supabase.from('commitments').insert({
+          user_id: userId,
+          commitment_text: args.commitment_text,
+          source_chat_context: args.context || null,
+          status: 'active'
+        }).select('id').single();
+        
+        if (commitmentResult.error) {
+          console.error('Commitment insert error:', commitmentResult.error);
+          return new Response(
+            JSON.stringify({ 
+              response: "I tried to save your commitment, but ran into a technical issue. Would you like to try again?",
+              error: commitmentResult.error.message 
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
+        // Award serviceberries for making a commitment
+        await supabase.rpc('award_serviceberries', {
+          p_user_id: userId,
+          p_amount: 5,
+          p_reason: 'commitment_made',
+          p_reference_id: commitmentResult.data.id
+        });
+        
+        console.log('Commitment saved:', commitmentResult.data.id);
+        
+        return new Response(
+          JSON.stringify({ 
+            response: `I've added "${args.commitment_text}" to your commitments! You can view and track all your commitments on your Profile page. I'll be here when you're ready to share how it went.`,
+            commitment: {
+              id: commitmentResult.data.id,
+              text: args.commitment_text
+            }
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
       }
       
       if (insertResult?.error) {
