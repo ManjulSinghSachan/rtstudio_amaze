@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TopNav } from "@/components/TopNav";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProfileOnboarding } from "@/components/ProfileOnboarding";
+import { VisionBoard } from "@/components/VisionBoard";
 import { Button } from "@/components/ui/button";
 import { User, MapPin, Sparkles, Settings } from "lucide-react";
 
@@ -69,17 +70,9 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Vision Board Placeholder */}
+        {/* Vision Board */}
         <div className="mb-8">
-          <h2 className="text-lg font-bold mb-4">Vision Board</h2>
-          <div className="p-8 rounded-lg border-2 border-dashed border-border text-center">
-            <p className="text-muted-foreground">
-              Your vision board will appear here. Upload images that inspire your neighborhood dreams.
-            </p>
-            <Button variant="outline" className="mt-4" disabled>
-              Coming Soon
-            </Button>
-          </div>
+          <VisionBoard />
         </div>
 
         {/* Commitments Placeholder */}
