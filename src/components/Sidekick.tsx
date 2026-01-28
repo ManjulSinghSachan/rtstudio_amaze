@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Copy, Send, Sparkles, Gift } from "lucide-react";
 import { useSidekick } from "@/contexts/SidekickContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { LibraryItemPreview } from "@/components/LibraryItemPreview";
 
 interface Message {
@@ -39,6 +40,7 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
   const location = useLocation();
   const navigate = useNavigate();
   const { messages, setMessages } = useSidekick();
+  const { user, profile } = useAuth();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [libraryItems, setLibraryItems] = useState<LibraryItemData[]>([]);
@@ -63,7 +65,10 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("chat-remix", {
-        body: { messages: messagesToSend }
+        body: { 
+          messages: messagesToSend,
+          userId: user?.id  // Pass authenticated user ID for personalization
+        }
       });
 
       if (error) throw error;
@@ -135,7 +140,8 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
   }, [messages, isLoading]);
 
   const getWelcomeMessage = () => {
-    return "I can help you learn about relational tech and build your own tools. What are we crafting today?";
+    const greeting = profile?.display_name ? `Hi ${profile.display_name}! ` : "";
+    return `${greeting}I can help you learn about relational tech and build your own tools. What are we crafting today?`;
   };
 
   const extractLibraryItems = (content: string) => {

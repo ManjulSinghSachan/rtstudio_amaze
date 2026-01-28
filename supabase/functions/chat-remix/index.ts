@@ -70,7 +70,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, userId } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -81,6 +81,47 @@ serve(async (req) => {
 
     // Initialize Supabase client
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+
+    // Fetch user profile if authenticated
+    let profileContext = '';
+    if (userId) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('display_name, neighborhood, neighborhood_description, dreams, tech_familiarity, ai_coding_experience')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (profile && !profileError) {
+      const techComfortMap: Record<string, string> = {
+          'new': 'New to tech',
+          'learning': 'Learning',
+          'comfortable': 'Comfortable',
+          'experienced': 'Experienced'
+        };
+        const techComfortLabel = techComfortMap[profile.tech_familiarity || ''] || 'Learning';
+        
+        const aiExperienceMap: Record<string, string> = {
+          'never': 'Never tried AI coding',
+          'a_little': 'A little AI coding experience',
+          'regular': 'Regular AI coding user',
+          'daily': 'Daily AI coding user'
+        };
+        const aiExperienceLabel = aiExperienceMap[profile.ai_coding_experience || ''] || 'Getting started';
+
+        profileContext = `
+
+BUILDER CONTEXT (personalize your responses to this person):
+- Name: ${profile.display_name || 'Builder'}
+- Neighborhood: ${profile.neighborhood || 'Not specified'}${profile.neighborhood_description ? ` - ${profile.neighborhood_description}` : ''}
+- Their dream: ${profile.dreams || 'Exploring possibilities'}
+- Tech comfort: ${techComfortLabel}
+- AI experience: ${aiExperienceLabel}
+
+Use their name naturally in conversation. Reference their neighborhood when relevant. Adjust technical explanations based on their comfort level. Connect suggestions to their stated dreams when possible.
+`;
+        console.log('Profile context loaded for user:', userId);
+      }
+    }
 
     // Get the latest user message for context search
     const latestUserMessage = messages[messages.length - 1]?.content || '';
@@ -320,7 +361,7 @@ IMPORTANT FOR CONTRIBUTIONS:
 - NEVER call submission functions without explicit user consent
 - If they seem hesitant, reassure them that their contribution can inspire others even if it's imperfect
 
-Begin by understanding what they're looking for - whether that's exploring the library, remixing a prompt, or contributing something new.${libraryContext}`;
+Begin by understanding what they're looking for - whether that's exploring the library, remixing a prompt, or contributing something new.${profileContext}${libraryContext}`;
 
     // Make the AI call with tools enabled
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
