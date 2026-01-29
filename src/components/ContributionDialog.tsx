@@ -69,13 +69,26 @@ export const ContributionDialog = ({ open, onOpenChange, onSuccess }: Contributi
 
     try {
       if (contributionType === "story") {
-        // Upload images if any
+        // Upload images if any - now requires authentication and uses user folder
         let imageUrls: string[] = [];
         if (storyImages.length > 0) {
+          // Get authenticated user for folder structure
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) {
+            toast({
+              title: "Authentication required",
+              description: "Please sign in to upload images.",
+              variant: "destructive",
+            });
+            setIsSubmitting(false);
+            return;
+          }
+
           const uploadPromises = storyImages.map(async (file) => {
             const fileExt = file.name.split('.').pop();
             const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
-            const filePath = `${fileName}`;
+            // Use user folder structure for storage policy compliance
+            const filePath = `${user.id}/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
               .from('story-images')
