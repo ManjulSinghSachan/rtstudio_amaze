@@ -84,7 +84,13 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="py-6 text-center text-sm text-muted-foreground border-t border-border">
-        <p>Made with care for neighbors everywhere</p>
+        <p className="flex items-center justify-center gap-2 flex-wrap">
+          <span>Made with care for neighbors everywhere</span>
+          <span className="hidden sm:inline">·</span>
+          <Link to="/privacy" className="text-primary hover:underline">
+            Privacy & Terms
+          </Link>
+        </p>
       </footer>
     </div>;
 };
