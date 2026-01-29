@@ -20,6 +20,7 @@ export const ProfileOnboarding = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
+  const [fullName, setFullName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [neighborhoodDescription, setNeighborhoodDescription] = useState("");
@@ -35,6 +36,7 @@ export const ProfileOnboarding = () => {
       const { error } = await supabase
         .from("profiles")
         .update({
+          full_name: fullName || null,
           display_name: displayName || null,
           neighborhood: neighborhood || null,
           neighborhood_description: neighborhoodDescription || null,
@@ -137,12 +139,21 @@ export const ProfileOnboarding = () => {
             <h2 className="text-xl font-bold text-center mb-6">About You</h2>
             <div className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="fullName">Your full name</Label>
+                <Input
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="First and last name"
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="displayName">What should we call you?</Label>
                 <Input
                   id="displayName"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Your name or nickname"
+                  placeholder="Nickname or preferred name"
                 />
               </div>
               <div className="space-y-2">
