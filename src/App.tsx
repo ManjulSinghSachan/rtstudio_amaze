@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
 import ChangePassword from "./pages/ChangePassword";
+import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound";
 import SidekickPage from "./pages/SidekickPage";
 import Library from "./pages/Library";
@@ -58,6 +59,7 @@ const App = () => (
                   }
                 />
                 <Route path="/change-password" element={<ChangePassword />} />
+                <Route path="/privacy" element={<Privacy />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
