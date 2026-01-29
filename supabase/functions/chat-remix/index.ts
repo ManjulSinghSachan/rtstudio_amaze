@@ -178,9 +178,11 @@ serve(async (req) => {
       }
     }
 
-    // Fetch user profile if authenticated
+    // Build authentication and profile context
     let profileContext = '';
+    
     if (userId) {
+      // User is authenticated - fetch their profile
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('display_name, neighborhood, neighborhood_description, dreams, tech_familiarity, ai_coding_experience')
@@ -188,7 +190,7 @@ serve(async (req) => {
         .maybeSingle();
       
       if (profile && !profileError) {
-      const techComfortMap: Record<string, string> = {
+        const techComfortMap: Record<string, string> = {
           'new': 'New to tech',
           'learning': 'Learning',
           'comfortable': 'Comfortable',
@@ -206,6 +208,8 @@ serve(async (req) => {
 
         profileContext = `
 
+AUTHENTICATED USER - This user IS signed in. You CAN save commitments and contributions to their profile.
+
 BUILDER CONTEXT (personalize your responses to this person):
 - Name: ${profile.display_name || 'Builder'}
 - Neighborhood: ${profile.neighborhood || 'Not specified'}${profile.neighborhood_description ? ` - ${profile.neighborhood_description}` : ''}
@@ -214,9 +218,25 @@ BUILDER CONTEXT (personalize your responses to this person):
 - AI experience: ${aiExperienceLabel}
 
 Use their name naturally in conversation. Reference their neighborhood when relevant. Adjust technical explanations based on their comfort level. Connect suggestions to their stated dreams when possible.
+
+When they confirm a commitment, immediately use the record_commitment tool - they are authenticated and it will work.
 `;
         console.log('Profile context loaded for verified user:', userId);
+      } else {
+        // User is authenticated but profile fetch failed or no profile yet
+        profileContext = `
+
+AUTHENTICATED USER - This user IS signed in. You CAN save commitments and contributions to their profile.
+`;
+        console.log('User authenticated but no profile data:', userId);
       }
+    } else {
+      // User is NOT authenticated
+      profileContext = `
+
+GUEST USER - This user is NOT signed in. You cannot save commitments to their profile. If they want to track commitments, politely let them know they need to sign in first (there's a profile icon in the top navigation).
+`;
+      console.log('User not authenticated - guest mode');
     }
 
     // Get the latest user message for context search
