@@ -29,8 +29,11 @@ const Profile = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold font-fraunces">
-                {profile?.display_name || "Builder"}
+                {profile?.display_name || profile?.full_name || "Builder"}
               </h1>
+              {profile?.full_name && profile?.display_name && (
+                <p className="text-sm text-muted-foreground">{profile.full_name}</p>
+              )}
               {profile?.neighborhood && (
                 <p className="text-muted-foreground flex items-center gap-1">
                   <MapPin className="h-4 w-4" />

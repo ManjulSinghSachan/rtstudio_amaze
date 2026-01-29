@@ -155,6 +155,7 @@ export type Database = {
           display_name: string | null
           dreams: string | null
           email: string | null
+          full_name: string | null
           id: string
           neighborhood: string | null
           neighborhood_description: string | null
@@ -168,6 +169,7 @@ export type Database = {
           display_name?: string | null
           dreams?: string | null
           email?: string | null
+          full_name?: string | null
           id: string
           neighborhood?: string | null
           neighborhood_description?: string | null
@@ -181,6 +183,7 @@ export type Database = {
           display_name?: string | null
           dreams?: string | null
           email?: string | null
+          full_name?: string | null
           id?: string
           neighborhood?: string | null
           neighborhood_description?: string | null
