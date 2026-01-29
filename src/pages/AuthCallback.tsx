@@ -71,6 +71,45 @@ const AuthCallback = () => {
 
     const handleAuthCallback = async () => {
       try {
+        // If tokens are present in the URL hash, set the session explicitly.
+        // This avoids relying on implicit, timing-sensitive parsing.
+        const hash = window.location.hash?.startsWith("#")
+          ? window.location.hash.slice(1)
+          : "";
+        if (hash) {
+          const hashParams = new URLSearchParams(hash);
+          const access_token = hashParams.get("access_token");
+          const refresh_token = hashParams.get("refresh_token");
+          const expires_in = hashParams.get("expires_in");
+          const token_type = hashParams.get("token_type");
+
+          if (access_token && refresh_token) {
+            setStatus("Confirming your link...");
+            await withTimeout(
+              supabase.auth.setSession({
+                access_token,
+                refresh_token,
+              }),
+              8000,
+              "Set session"
+            );
+
+            // Clean up the hash ASAP (don’t leave tokens in the URL)
+            window.history.replaceState(
+              null,
+              "",
+              window.location.pathname + window.location.search
+            );
+          } else if (hashParams.get("error")) {
+            console.error("Auth callback error in hash:", {
+              error: hashParams.get("error"),
+              error_description: hashParams.get("error_description"),
+              token_type,
+              expires_in,
+            });
+          }
+        }
+
         // In implicit magic-link flow, tokens arrive in the URL hash.
         // supabase-js parses them asynchronously; poll briefly so we don't hang forever.
         const start = Date.now();
