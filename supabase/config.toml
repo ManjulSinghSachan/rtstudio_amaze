@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.verify-magic-link]
 verify_jwt = false
+
+[functions.email-hook]
+verify_jwt = false

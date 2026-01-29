@@ -1,10 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useTour } from "@/contexts/TourContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ServiceberriesCounter } from "@/components/ServiceberriesCounter";
-import { HelpCircle, Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
   DropdownMenu, 
@@ -14,7 +13,6 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { name: "Sidekick", path: "/sidekick" },
@@ -23,10 +21,8 @@ const navItems = [
 
 export const TopNav = () => {
   const location = useLocation();
-  const { startTour } = useTour();
   const { profile, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const isMobile = useIsMobile();
 
   const mobileNavItems = [
     ...navItems,
@@ -66,16 +62,6 @@ export const TopNav = () => {
             </div>
             
             <ServiceberriesCounter variant="nav" />
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={startTour}
-              className="h-8 w-8 text-muted-foreground hover:text-primary transition-colors"
-              title="Start Tour"
-            >
-              <HelpCircle className="h-5 w-5" />
-            </Button>
 
             {/* Profile dropdown */}
             <DropdownMenu>
@@ -109,16 +95,6 @@ export const TopNav = () => {
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={startTour}
-              className="h-9 w-9 text-muted-foreground hover:text-primary transition-colors"
-              title="Start Tour"
-            >
-              <HelpCircle className="h-5 w-5" />
-            </Button>
-
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button
