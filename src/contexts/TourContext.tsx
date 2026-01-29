@@ -77,21 +77,9 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Tour is disabled for now - will be updated with new content
   useEffect(() => {
-    const checkAuthAndStartTour = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const hasSeenTour = localStorage.getItem('hasSeenTour');
-      
-      // Only auto-start tour if user is authenticated and hasn't seen it
-      if (session && !hasSeenTour) {
-        const timer = setTimeout(() => {
-          setIsActive(true);
-        }, 500);
-        return () => clearTimeout(timer);
-      }
-    };
-    
-    checkAuthAndStartTour();
+    // Auto-start tour is disabled
   }, []);
 
   useEffect(() => {
