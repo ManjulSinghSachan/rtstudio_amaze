@@ -186,7 +186,7 @@ serve(async (req) => {
       // User is authenticated - fetch their profile
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('display_name, neighborhood, neighborhood_description, dreams, tech_familiarity, ai_coding_experience')
+        .select('full_name, display_name, neighborhood, neighborhood_description, dreams, tech_familiarity, ai_coding_experience')
         .eq('id', userId)
         .maybeSingle();
       
@@ -207,22 +207,31 @@ serve(async (req) => {
         };
         const aiExperienceLabel = aiExperienceMap[profile.ai_coding_experience || ''] || 'Getting started';
 
+        // Build list of name variations to avoid self-referencing
+        const userNames: string[] = [];
+        if (profile.full_name) userNames.push(profile.full_name);
+        if (profile.display_name && profile.display_name !== profile.full_name) userNames.push(profile.display_name);
+        const namesList = userNames.length > 0 ? userNames.join(', ') : 'the current user';
+
         profileContext = `
 
 AUTHENTICATED USER - This user IS signed in. You CAN save commitments and contributions to their profile.
 
 BUILDER CONTEXT (personalize your responses to this person):
-- Name: ${profile.display_name || 'Builder'}
+- Full name: ${profile.full_name || 'Not provided'}
+- Preferred name: ${profile.display_name || 'Builder'}
 - Neighborhood: ${profile.neighborhood || 'Not specified'}${profile.neighborhood_description ? ` - ${profile.neighborhood_description}` : ''}
 - Their dream: ${profile.dreams || 'Exploring possibilities'}
 - Tech comfort: ${techComfortLabel}
 - AI experience: ${aiExperienceLabel}
 
-Use their name naturally in conversation. Reference their neighborhood when relevant. Adjust technical explanations based on their comfort level. Connect suggestions to their stated dreams when possible.
+CRITICAL: This user is ${namesList}. When recommending people to connect with or stories/contributions to explore, DO NOT recommend they contact themselves or their own contributions. If you find library items attributed to them, acknowledge they created it rather than suggesting they "reach out to" themselves.
+
+Use their preferred name naturally in conversation. Reference their neighborhood when relevant. Adjust technical explanations based on their comfort level. Connect suggestions to their stated dreams when possible.
 
 When they confirm a commitment, immediately use the record_commitment tool - they are authenticated and it will work.
 `;
-        console.log('Profile context loaded for verified user:', userId);
+        console.log('Profile context loaded for verified user:', userId, 'Names:', namesList);
       } else {
         // User is authenticated but profile fetch failed or no profile yet
         profileContext = `
