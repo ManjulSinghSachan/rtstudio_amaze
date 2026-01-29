@@ -71,6 +71,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let mounted = true;
 
     const initializeAuth = async () => {
+      const withTimeout = async <T,>(promise: PromiseLike<T>, ms: number, label: string): Promise<T> => {
+        const timeout = new Promise<T>((_, reject) =>
+          setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+        );
+        return Promise.race([Promise.resolve(promise) as Promise<T>, timeout]);
+      };
+
       // Check if there's a hash fragment with auth tokens (magic link callback)
       const hasAuthCallback = window.location.hash.includes('access_token') || 
                               window.location.hash.includes('refresh_token') ||
@@ -116,16 +123,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       });
 
-      // Get initial session
-      const {
-        data: { session: initialSession },
-        error,
-      } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error("Error getting session:", error);
+      // Get initial session (never allow this to hang the UI)
+      let initialSession: Session | null = null;
+      try {
+        const result = await withTimeout(
+          supabase.auth.getSession(),
+          5000,
+          "Get session"
+        );
+        initialSession = result.data.session ?? null;
+        if (result.error) {
+          console.error("Error getting session:", result.error);
+        }
+      } catch (e) {
+        console.error("Get session failed/timed out:", e);
       }
-
+      
       if (!mounted) return;
 
       // If there's an auth callback, the onAuthStateChange will handle it.
