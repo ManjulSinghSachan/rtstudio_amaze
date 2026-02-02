@@ -658,6 +658,23 @@ Begin by understanding what they're looking for - whether that's exploring the l
       const newId = insertResult?.data?.id;
       console.log('Contribution saved:', contributionType, newId);
       
+      // Award serviceberries for library contribution (15 berries per memory spec)
+      if (userId && userSupabase && newId) {
+        const { error: serviceberryError } = await userSupabase.rpc('award_serviceberries', {
+          p_user_id: userId,
+          p_amount: 15,
+          p_reason: `contribution_${contributionType}`,
+          p_reference_id: newId
+        });
+        
+        if (serviceberryError) {
+          console.error('Serviceberries award error for contribution:', serviceberryError);
+          // Don't fail the whole operation, just log the error
+        } else {
+          console.log('Serviceberries awarded for contribution:', contributionType, newId);
+        }
+      }
+      
       // Return success response with contribution info
       return new Response(
         JSON.stringify({ 
