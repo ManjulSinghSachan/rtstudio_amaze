@@ -18,7 +18,14 @@ const DemoChat = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messageCount, setMessageCount] = useState(0);
+  const [loadingPhase, setLoadingPhase] = useState(0);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const loadingMessages = [
+    "Thinking...",
+    "Searching our library...",
+    "Drafting..."
+  ];
 
   const hasReachedLimit = messageCount >= MESSAGE_LIMIT;
 
@@ -27,6 +34,21 @@ const DemoChat = () => {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingPhase(0);
+      return;
+    }
+    
+    const timer1 = setTimeout(() => setLoadingPhase(1), 2000);
+    const timer2 = setTimeout(() => setLoadingPhase(2), 5000);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,11 +166,9 @@ const DemoChat = () => {
               {isLoading && (
                 <div className="flex justify-start">
                   <div className="bg-muted text-foreground rounded-2xl px-4 py-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 bg-primary/60 rounded-full animate-bounce" />
-                      <div className="h-2 w-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }} />
-                      <div className="h-2 w-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }} />
-                    </div>
+                    <p className="text-muted-foreground animate-pulse">
+                      {loadingMessages[loadingPhase]}
+                    </p>
                   </div>
                 </div>
               )}
