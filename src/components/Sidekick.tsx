@@ -71,11 +71,16 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
   const sendMessage = async (messagesToSend: Message[]) => {
     setIsLoading(true);
     try {
+      // Get the current session to ensure we have a fresh token
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const { data, error } = await supabase.functions.invoke("chat-remix", {
         body: { 
-          messages: messagesToSend,
-          userId: user?.id  // Pass authenticated user ID for personalization
-        }
+          messages: messagesToSend
+        },
+        headers: session?.access_token ? {
+          Authorization: `Bearer ${session.access_token}`
+        } : undefined
       });
 
       if (error) throw error;
