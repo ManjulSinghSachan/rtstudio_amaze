@@ -11,7 +11,7 @@ interface Message {
   content: string;
 }
 
-const MESSAGE_LIMIT = 10;
+const MESSAGE_LIMIT = 5;
 
 const DemoChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
