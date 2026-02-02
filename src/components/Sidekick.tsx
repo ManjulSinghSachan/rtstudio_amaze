@@ -43,8 +43,15 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
   const { user, profile } = useAuth();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingPhase, setLoadingPhase] = useState(0);
   const [libraryItems, setLibraryItems] = useState<LibraryItemData[]>([]);
   const [recentContribution, setRecentContribution] = useState<ContributionData | null>(null);
+
+  const loadingMessages = [
+    "Thinking...",
+    "Searching our library...",
+    "Drafting..."
+  ];
   const { toast } = useToast();
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const lastProcessedIndexRef = useRef(-1);
@@ -100,6 +107,22 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
   useEffect(() => {
     scrollToLatestMessage();
   }, [messages]);
+
+  // Loading phase transitions
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingPhase(0);
+      return;
+    }
+    
+    const timer1 = setTimeout(() => setLoadingPhase(1), 2000);
+    const timer2 = setTimeout(() => setLoadingPhase(2), 5000);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, [isLoading]);
 
   // Handle initial prompt
   useEffect(() => {
@@ -303,7 +326,9 @@ export const Sidekick = ({ initialPrompt, onClearInitialPrompt, fullPage = false
             {isLoading && (
               <div className="flex justify-start">
                 <div className="max-w-[85%] p-3 rounded-xl bg-secondary/50 border border-border">
-                  <p className="text-sm text-muted-foreground animate-pulse">Thinking...</p>
+                  <p className="text-sm text-muted-foreground animate-pulse">
+                    {loadingMessages[loadingPhase]}
+                  </p>
                 </div>
               </div>
             )}
