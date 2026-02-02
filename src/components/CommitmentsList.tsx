@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -11,7 +12,8 @@ import {
   Trash2, 
   Sparkles,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Plus
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -32,6 +34,8 @@ export const CommitmentsList = () => {
   const [commitments, setCommitments] = useState<Commitment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [newCommitmentText, setNewCommitmentText] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -136,6 +140,43 @@ export const CommitmentsList = () => {
     }
   };
 
+  const handleAddCommitment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !newCommitmentText.trim()) return;
+
+    setIsAdding(true);
+    try {
+      const { data, error } = await supabase
+        .from("commitments")
+        .insert({
+          user_id: user.id,
+          commitment_text: newCommitmentText.trim(),
+          status: "active",
+          source_chat_context: null
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCommitments([data, ...commitments]);
+      setNewCommitmentText("");
+      toast({
+        title: "Commitment added",
+        description: "Good luck following through!",
+      });
+    } catch (error: any) {
+      console.error("Error adding commitment:", error);
+      toast({
+        title: "Failed to add commitment",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
   const activeCommitments = commitments.filter(c => c.status === "active");
   const completedCommitments = commitments.filter(c => c.status === "completed");
 
@@ -147,6 +188,24 @@ export const CommitmentsList = () => {
     <div className="space-y-4">
       <h2 className="text-lg font-bold">Commitments</h2>
 
+      {/* Add Commitment Input */}
+      <form onSubmit={handleAddCommitment} className="flex gap-2">
+        <Input
+          value={newCommitmentText}
+          onChange={(e) => setNewCommitmentText(e.target.value)}
+          placeholder="Add a commitment..."
+          disabled={isAdding}
+          className="flex-1"
+        />
+        <Button 
+          type="submit" 
+          size="icon" 
+          disabled={isAdding || !newCommitmentText.trim()}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </form>
+
       {commitments.length === 0 ? (
         <div className="p-8 rounded-lg border-2 border-dashed border-border text-center">
           <Sparkles className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
@@ -154,7 +213,7 @@ export const CommitmentsList = () => {
             No commitments yet
           </p>
           <p className="text-sm text-muted-foreground">
-            When you make commitments during chat sessions with Sidekick, they'll appear here for you to track.
+            Add your first commitment above and check it off when you're done to earn serviceberries!
           </p>
         </div>
       ) : (
