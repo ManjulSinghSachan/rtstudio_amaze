@@ -184,6 +184,7 @@ export type Database = {
           neighborhood: string | null
           neighborhood_description: string | null
           profile_completed: boolean | null
+          solutions: string[] | null
           tech_familiarity: string | null
           updated_at: string | null
         }
@@ -198,6 +199,7 @@ export type Database = {
           neighborhood?: string | null
           neighborhood_description?: string | null
           profile_completed?: boolean | null
+          solutions?: string[] | null
           tech_familiarity?: string | null
           updated_at?: string | null
         }
@@ -212,8 +214,90 @@ export type Database = {
           neighborhood?: string | null
           neighborhood_description?: string | null
           profile_completed?: boolean | null
+          solutions?: string[] | null
           tech_familiarity?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      issues: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string | null
+          tags: string[]
+          status: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          description?: string | null
+          tags?: string[]
+          status?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          description?: string | null
+          tags?: string[]
+          status?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      spaces: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          solutions: string[]
+          created_by: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          solutions?: string[]
+          created_by?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          solutions?: string[]
+          created_by?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      solution_definitions: {
+        Row: {
+          key: string
+          label: string
+          created_at: string | null
+        }
+        Insert: {
+          key: string
+          label: string
+          created_at?: string | null
+        }
+        Update: {
+          key?: string
+          label?: string
+          created_at?: string | null
         }
         Relationships: []
       }
@@ -465,6 +549,35 @@ export type Database = {
           p_user_id: string
         }
         Returns: undefined
+      }
+      match_issues_to_profile: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: Database["public"]["Tables"]["issues"]["Row"][]
+      }
+      match_profiles_to_issue: {
+        Args: {
+          p_issue_id: string
+        }
+        Returns: Database["public"]["Tables"]["profiles"]["Row"][]
+      }
+      match_spaces_to_issue: {
+        Args: {
+          p_issue_id: string
+        }
+        Returns: Database["public"]["Tables"]["spaces"]["Row"][]
+      }
+      search_by_solutions: {
+        Args: {
+          p_keys: string[]
+        }
+        Returns: {
+          match_type: string
+          match_id: string
+          match_name: string
+          matched_keys: string[]
+        }[]
       }
     }
     Enums: {
